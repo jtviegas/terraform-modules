@@ -3,9 +3,9 @@ resource "aws_s3_bucket" "terraform-state" {
   bucket = "${var.application}-${var.environment}-terraform-state"
   
   # Prevent accidental deletion of this S3 bucket
-  #lifecycle {
-  #  prevent_destroy = true
-  #}
+  lifecycle {
+    prevent_destroy = true
+  }
 
   # Enable versioning so we can see the full revision history of our
   # state files
