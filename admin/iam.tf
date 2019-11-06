@@ -13,7 +13,7 @@ resource "aws_iam_user_login_profile" "admin" {
   user    = "${aws_iam_user.admin.name}"
   pgp_key = "${var.admin-public-key}"
   password_length = 12
-  password_reset_required = "true"
+  #password_reset_required = "true"
 }
 
 # --- groups ---
