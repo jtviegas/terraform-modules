@@ -24,9 +24,9 @@ svn export "$MODULES_URL" "$this_folder/$MODULES_DIR"
 if [ "$1" == "deploy" ]; then
     terraform init
     terraform plan
-    terraform apply -auto-approve -lock=true -lock-timeout=300s
+    terraform apply -auto-approve -lock=true -lock-timeout=10m
 else
-    terraform destroy -auto-approve -lock=true -lock-timeout=300s
+    terraform destroy -auto-approve -lock=true -lock-timeout=10m
 fi
 
 rm -rf "$this_folder/$MODULES_DIR"
