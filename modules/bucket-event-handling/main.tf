@@ -3,11 +3,6 @@ module "bucket" {
   name = "${var.bucket-name}"
 }
 
-module "table" {
-  source = "../simple-table"
-  name = "${var.table-name}"
-}
-
 module "function-role" {
   source = "../bucket-event-handling-role"
   name = "${var.function-role-name}"

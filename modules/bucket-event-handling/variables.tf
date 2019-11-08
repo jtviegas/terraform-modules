@@ -3,11 +3,6 @@ variable "bucket-name" {
   # default     = "..."
 }
 
-variable "table-name" {
-  type        = string
-  # default     = "..."
-}
-
 variable "function-role-name" {
   type        = string
   # default     = "..."
