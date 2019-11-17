@@ -22,7 +22,7 @@ resource "aws_api_gateway_method" "resources-methods" {
   authorization = "NONE"
 }
 resource "aws_api_gateway_integration" "lambda-integration-resources" {
-  for_each                  = values(aws_api_gateway_resource.resources)[*].id
+  for_each                  = toset(values(aws_api_gateway_resource.resources)[*].id)
   rest_api_id               = "${aws_api_gateway_rest_api.api.id}"
   resource_id               = each.value
   http_method               = values(aws_api_gateway_method.resources-methods)[each.key].http_method
