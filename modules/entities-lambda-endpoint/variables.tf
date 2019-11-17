@@ -18,11 +18,6 @@ variable "api-name" {
   # default     = "..."
 }
 
-variable "resource" {
-  type        = string
-  # default     = "..."
-}
-
 variable "lambda-name" {
   type        = string
   # default     = "..."
@@ -41,4 +36,10 @@ variable "lambda-role" {
 variable "lambda-role-policy" {
   type        = string
   # default     = "..."
+}
+
+variable "tables" {
+  description = "tables to be created as part of the app"
+  type        = list(string)
+  # default     = ["neo", "trinity", "morpheus"]
 }
