@@ -32,7 +32,7 @@ resource "aws_api_gateway_integration" "lambda-integration-resources" {
 }
 
 resource "aws_api_gateway_deployment" "deployment-resources" {
-  depends_on = aws_api_gateway_integration.lambda-integration-resources
+  depends_on = values(aws_api_gateway_integration.lambda-integration-resources)[*]
 
   rest_api_id = "${aws_api_gateway_rest_api.api.id}"
   stage_name  = "${var.environment}"
