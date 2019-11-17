@@ -32,8 +32,8 @@ resource "aws_api_gateway_integration" "lambda-integration-resources" {
 }
 
 resource "aws_api_gateway_deployment" "deployment-resources" {
-  for_each      = aws_api_gateway_integration.lambda-integration-resources
-  depends_on = [ each.value ]
+  for_each      = aws_api_gateway_resource.resources
+  depends_on    = values(aws_api_gateway_integration.lambda-integration-resources)[each.key]
 
   rest_api_id = "${aws_api_gateway_rest_api.api.id}"
   stage_name  = "${var.environment}"
