@@ -119,7 +119,6 @@ resource "aws_iam_role_policy_attachment" "lambda-role-policy" {
 
 # --- tables ---
 module "tables" {
-    for_each = toset(var.tables)
-    source = "../simple-table"
-    name     = each.value
+    source = "../simple-tables"
+    names     = ${var.tables}
 }

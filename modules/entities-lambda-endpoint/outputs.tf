@@ -18,5 +18,5 @@ output "execution-arn" {
 }
 
 output "tables-arn" {
-  value       = values(module.tables)[*].arn
+  value       = module.tables.arns
 }
