@@ -1,4 +1,4 @@
-resource "aws_dynamodb_table" "simple-table" {
+resource "aws_dynamodb_table" "simple-tables" {
   for_each = toset(var.names)
   name     = each.value
   billing_mode = "PAY_PER_REQUEST"
