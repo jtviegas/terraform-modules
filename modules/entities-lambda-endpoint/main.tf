@@ -120,5 +120,5 @@ resource "aws_iam_role_policy_attachment" "lambda-role-policy" {
 # --- tables ---
 module "tables" {
     source = "../simple-tables"
-    names     = ${var.tables}
+    names     = var.tables
 }
