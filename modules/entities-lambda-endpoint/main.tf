@@ -8,7 +8,7 @@ resource "aws_api_gateway_rest_api" "api" {
 
 
 resource "aws_api_gateway_resource" "resources" {
-  for_each      = toset(local.resources)
+  for_each      = local.resources
   rest_api_id   = "${aws_api_gateway_rest_api.api.id}"
   parent_id     = "${aws_api_gateway_rest_api.api.root_resource_id}"
   path_part     = "${each.value}"
@@ -18,7 +18,7 @@ resource "aws_api_gateway_resource" "resources" {
 resource "aws_api_gateway_method" "resources-methods" {
   for_each      = toset(local.resources)
   rest_api_id   = "${aws_api_gateway_rest_api.api.id}"
-  resource_id   = aws_api_gateway_resource.resources[each.key].id
+  resource_id   = "${aws_api_gateway_resource.resources[each.key].id}"
   http_method   = "ANY"
   authorization = "NONE"
 }
