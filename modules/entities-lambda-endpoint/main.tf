@@ -10,7 +10,7 @@ resource "aws_api_gateway_rest_api" "api" {
 resource "aws_api_gateway_resource" "resources" {
   for_each      = toset(local.resources)
   rest_api_id   = "${aws_api_gateway_rest_api.api.id}"
-  parent_id     = each.key == 0 ? "${aws_api_gateway_rest_api.api.root_resource_id}" : aws_api_gateway_resource.resources[${each.key}-1].id}
+  parent_id     = each.key == 0 ? "${aws_api_gateway_rest_api.api.root_resource_id}" : aws_api_gateway_resource.resources[ each.key - 1 ].id}
   path_part     = "${each.value}"
 }
 
