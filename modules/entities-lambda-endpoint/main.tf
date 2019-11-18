@@ -1,5 +1,5 @@
 locals {
-  resources = [ "entities", "{app}", "{entity}", "{id}" ]
+  resources = [ "entities/{app}/{entity}", "entities/{app}/{entity}/{id}" ]
 }
 
 resource "aws_api_gateway_rest_api" "api" {
