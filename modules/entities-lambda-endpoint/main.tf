@@ -45,7 +45,7 @@ resource "aws_api_gateway_integration" "lambda-integration-resources-entity" {
   uri                       = "${aws_lambda_function.lambda.invoke_arn}"
 }
 resource "aws_api_gateway_deployment" "deployment-resources-entity" {
-  depends_on    = [ "${aws_api_gateway_integration.lambda-integration-resources-entity}" ]
+  depends_on    = [ aws_api_gateway_integration.lambda-integration-resources-entity ]
   rest_api_id = "${aws_api_gateway_rest_api.api.id}"
   stage_name  = "${var.environment}"
 
@@ -78,8 +78,8 @@ resource "aws_api_gateway_integration" "lambda-integration-resources-id" {
   type                      = "AWS_PROXY"
   uri                       = "${aws_lambda_function.lambda.invoke_arn}"
 }
-resource "aws_api_gateway_deployment" "deployment-resources-entity" {
-  depends_on    = [ "${aws_api_gateway_integration.lambda-integration-resources-id}" ]
+resource "aws_api_gateway_deployment" "deployment-resources-id" {
+  depends_on    = [ aws_api_gateway_integration.lambda-integration-resources-id ]
   rest_api_id = "${aws_api_gateway_rest_api.api.id}"
   stage_name  = "${var.environment}"
 
