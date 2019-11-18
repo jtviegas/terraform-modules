@@ -44,14 +44,14 @@ resource "aws_api_gateway_deployment" "deployment-resources" {
 } 
 
 resource "aws_lambda_permission" "lambda-permission-resources" {
-  for_each      = aws_api_gateway_resource.resources
+  for_each      = toset(local.resources)
   statement_id  = "AllowExecutionFromAPIGateway_${each.key}"
   action        = "lambda:InvokeFunction"
   function_name = "${aws_lambda_function.lambda.function_name}"
   principal     = "apigateway.amazonaws.com"
 
   # More: http://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-control-access-using-iam-policies-to-invoke-api.html
-  source_arn = "arn:aws:execute-api:${var.region}:${var.account-id}:${aws_api_gateway_rest_api.api.id}/*/${values(aws_api_gateway_method.resources-methods)[each.key].http_method}${each.value.path}"
+  source_arn = "arn:aws:execute-api:${var.region}:${var.account-id}:${aws_api_gateway_rest_api.api.id}/*/${aws_api_gateway_method.resources-methods[each.key].http_method}${aws_api_gateway_resource.resources[each.key].path}"
 }
 
 
