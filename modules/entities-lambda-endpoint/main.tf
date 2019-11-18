@@ -15,17 +15,19 @@ resource "aws_api_gateway_resource" "resources" {
 }
 
 resource "aws_api_gateway_method" "resources-methods" {
+  for_each      = toset(local.resources)
   for_each      = aws_api_gateway_resource.resources
   rest_api_id   = "${aws_api_gateway_rest_api.api.id}"
-  resource_id   = each.value.id
+  resource_id   = "${aws_api_gateway_method.resources-methods[each.key].id}"
   http_method   = "ANY"
   authorization = "NONE"
 }
+
 resource "aws_api_gateway_integration" "lambda-integration-resources" {
-  for_each                  = toset(values(aws_api_gateway_resource.resources)[*].id)
+  for_each                  = toset(local.resources)
   rest_api_id               = "${aws_api_gateway_rest_api.api.id}"
-  resource_id               = each.value
-  http_method               = values(aws_api_gateway_method.resources-methods)[each.key].http_method
+  resource_id               = "${aws_api_gateway_resource.resources[each.key].id}"
+  http_method               = "${aws_api_gateway_resource.resources[each.key].http_method}"[each.key].http_method
   integration_http_method   = "POST"
   type                      = "AWS_PROXY"
   uri                       = "${aws_lambda_function.lambda.invoke_arn}"
