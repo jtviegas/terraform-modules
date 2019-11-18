@@ -1,11 +1,4 @@
 
-output "resource-id" {
-  value       = values(aws_api_gateway_resource.resources)[*].id
-}
-
-output "resource-path" {
-  value       = values(aws_api_gateway_resource.resources)[*].path
-}
 
 output "invoke-url" {
     value       = values(aws_api_gateway_deployment.deployment-resources)[*].invoke_url
