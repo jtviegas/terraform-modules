@@ -45,7 +45,7 @@ resource "aws_api_gateway_deployment" "deployment-resources" {
 
 resource "aws_lambda_permission" "lambda-permission-resources" {
   for_each      = toset(local.resources)
-  statement_id  = "AllowExecutionFromAPIGateway_${each.key}"
+  statement_id  = "AllowExecutionFromAPIGateway"
   action        = "lambda:InvokeFunction"
   function_name = "${aws_lambda_function.lambda.function_name}"
   principal     = "apigateway.amazonaws.com"
