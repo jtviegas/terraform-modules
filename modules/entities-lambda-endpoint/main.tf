@@ -17,6 +17,7 @@ resource "aws_api_gateway_resource" "resources-app" {
   parent_id     = "${aws_api_gateway_resource.resources-base.id}"
   path_part     = "{app}"
 }
+
 resource "aws_api_gateway_resource" "resources-entity" {
   rest_api_id   = "${aws_api_gateway_rest_api.api.id}"
   parent_id     = "${aws_api_gateway_resource.resources-app.id}"
@@ -28,27 +29,23 @@ resource "aws_api_gateway_resource" "resources-id" {
   path_part     = "{id}"
 }
 
-resource "aws_api_gateway_method" "resources-methods" {
-  for_each      = toset([ aws_api_gateway_resource.resources-entity.id, aws_api_gateway_resource.resources-id.id ])
+
+resource "aws_api_gateway_method" "resources-entity-methods" {
   rest_api_id   = "${aws_api_gateway_rest_api.api.id}"
-  resource_id   = "${each.value}"
+  resource_id   = "${aws_api_gateway_resource.resources-entity.id}"
   http_method   = "ANY"
   authorization = "NONE"
 }
-
-resource "aws_api_gateway_integration" "lambda-integration-resources" {
-  for_each                  = toset([ aws_api_gateway_resource.resources-entity.id, aws_api_gateway_resource.resources-id.id ])
+resource "aws_api_gateway_integration" "lambda-integration-resources-entity" {
   rest_api_id               = "${aws_api_gateway_rest_api.api.id}"
-  resource_id               = "${aws_api_gateway_resource.resources[each.key].id}"
-  http_method               = "${aws_api_gateway_method.resources-methods[each.key].http_method}"
+  resource_id               = "${aws_api_gateway_resource.resources-entity.id}"
+  http_method               = "${aws_api_gateway_method.resources-entity-methods.http_method}"
   integration_http_method   = "POST"
   type                      = "AWS_PROXY"
   uri                       = "${aws_lambda_function.lambda.invoke_arn}"
 }
-
-resource "aws_api_gateway_deployment" "deployment-resources" {
-  for_each      = toset(local.resources)
-  depends_on    = [ "aws_api_gateway_integration.lambda-integration-resources" ]
+resource "aws_api_gateway_deployment" "deployment-resources-entity" {
+  depends_on    = [ "${aws_api_gateway_integration.lambda-integration-resources-entity}" ]
   rest_api_id = "${aws_api_gateway_rest_api.api.id}"
   stage_name  = "${var.environment}"
 
@@ -56,18 +53,49 @@ resource "aws_api_gateway_deployment" "deployment-resources" {
     "dummy" = "xpto"
   }
 } 
-
-resource "aws_lambda_permission" "lambda-permission-resources" {
-  for_each      = toset(local.resources)
-  statement_id  = "AllowExecutionFromAPIGateway_${aws_api_gateway_resource.resources[each.key].id}"
+resource "aws_lambda_permission" "lambda-permission-resources-entity" {
+  statement_id  = "AllowExecutionFromAPIGateway-resources-entity"
   action        = "lambda:InvokeFunction"
   function_name = "${aws_lambda_function.lambda.function_name}"
   principal     = "apigateway.amazonaws.com"
 
   # More: http://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-control-access-using-iam-policies-to-invoke-api.html
-  source_arn = "arn:aws:execute-api:${var.region}:${var.account-id}:${aws_api_gateway_rest_api.api.id}/*/${aws_api_gateway_method.resources-methods[each.key].http_method}${aws_api_gateway_resource.resources[each.key].path}"
+  source_arn = "arn:aws:execute-api:${var.region}:${var.account-id}:${aws_api_gateway_rest_api.api.id}/*/${aws_api_gateway_method.resources-entity-methods.http_method}${aws_api_gateway_resource.resources-entity.path}"
 }
 
+
+resource "aws_api_gateway_method" "resources-id-methods" {
+  rest_api_id   = "${aws_api_gateway_rest_api.api.id}"
+  resource_id   = "${aws_api_gateway_resource.resources-id.id}"
+  http_method   = "ANY"
+  authorization = "NONE"
+}
+resource "aws_api_gateway_integration" "lambda-integration-resources-id" {
+  rest_api_id               = "${aws_api_gateway_rest_api.api.id}"
+  resource_id               = "${aws_api_gateway_resource.resources-id.id}"
+  http_method               = "${aws_api_gateway_method.resources-id-methods.http_method}"
+  integration_http_method   = "POST"
+  type                      = "AWS_PROXY"
+  uri                       = "${aws_lambda_function.lambda.invoke_arn}"
+}
+resource "aws_api_gateway_deployment" "deployment-resources-entity" {
+  depends_on    = [ "${aws_api_gateway_integration.lambda-integration-resources-id}" ]
+  rest_api_id = "${aws_api_gateway_rest_api.api.id}"
+  stage_name  = "${var.environment}"
+
+  variables = {
+    "dummy" = "xpto"
+  }
+} 
+resource "aws_lambda_permission" "lambda-permission-resources-id" {
+  statement_id  = "AllowExecutionFromAPIGateway-resources-id"
+  action        = "lambda:InvokeFunction"
+  function_name = "${aws_lambda_function.lambda.function_name}"
+  principal     = "apigateway.amazonaws.com"
+
+  # More: http://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-control-access-using-iam-policies-to-invoke-api.html
+  source_arn = "arn:aws:execute-api:${var.region}:${var.account-id}:${aws_api_gateway_rest_api.api.id}/*/${aws_api_gateway_method.resources-id-methods.http_method}${aws_api_gateway_resource.resources-id.path}"
+}
 
 
 resource "aws_lambda_function" "lambda" {
