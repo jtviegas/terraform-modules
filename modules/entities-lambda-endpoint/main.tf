@@ -7,24 +7,37 @@ resource "aws_api_gateway_rest_api" "api" {
 }
 
 
-resource "aws_api_gateway_resource" "resources" {
-  for_each      = toset(local.resources)
+resource "aws_api_gateway_resource" "resources-base" {
   rest_api_id   = "${aws_api_gateway_rest_api.api.id}"
   parent_id     = "${aws_api_gateway_rest_api.api.root_resource_id}"
-  path_part     = each.value
+  path_part     = "entities"
+}
+resource "aws_api_gateway_resource" "resources-app" {
+  rest_api_id   = "${aws_api_gateway_rest_api.api.id}"
+  parent_id     = "${aws_api_gateway_resource.resources-base.id}"
+  path_part     = "{app}"
+}
+resource "aws_api_gateway_resource" "resources-entity" {
+  rest_api_id   = "${aws_api_gateway_rest_api.api.id}"
+  parent_id     = "${aws_api_gateway_resource.resources-app.id}"
+  path_part     = "{entity}"
+}
+resource "aws_api_gateway_resource" "resources-id" {
+  rest_api_id   = "${aws_api_gateway_rest_api.api.id}"
+  parent_id     = "${aws_api_gateway_resource.resources-entity.id}"
+  path_part     = "{id}"
 }
 
-
 resource "aws_api_gateway_method" "resources-methods" {
-  for_each      = toset(local.resources)
+  for_each      = toset([ aws_api_gateway_resource.resources-entity.id, aws_api_gateway_resource.resources-id.id ])
   rest_api_id   = "${aws_api_gateway_rest_api.api.id}"
-  resource_id   = "${aws_api_gateway_resource.resources[each.key].id}"
+  resource_id   = "${each.value}"
   http_method   = "ANY"
   authorization = "NONE"
 }
 
 resource "aws_api_gateway_integration" "lambda-integration-resources" {
-  for_each                  = toset(local.resources)
+  for_each                  = toset([ aws_api_gateway_resource.resources-entity.id, aws_api_gateway_resource.resources-id.id ])
   rest_api_id               = "${aws_api_gateway_rest_api.api.id}"
   resource_id               = "${aws_api_gateway_resource.resources[each.key].id}"
   http_method               = "${aws_api_gateway_method.resources-methods[each.key].http_method}"
