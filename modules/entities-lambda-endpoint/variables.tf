@@ -38,8 +38,8 @@ variable "lambda-role-policy" {
   # default     = "..."
 }
 
-variable "tables" {
-  description = "tables to be created as part of the app"
-  type        = list(string)
+#variable "tables" {
+#  description = "tables to be created as part of the app"
+#  type        = list(string)
   # default     = ["neo", "trinity", "morpheus"]
-}
+#}

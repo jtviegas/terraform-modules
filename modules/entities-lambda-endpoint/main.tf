@@ -1,11 +1,6 @@
-locals {
-  resources = [ "entities/{app}/{entity}", "entities/{app}/{entity}/{id}" ]
-}
-
 resource "aws_api_gateway_rest_api" "api" {
   name        = "${var.api-name}"
 }
-
 
 resource "aws_api_gateway_resource" "resources-base" {
   rest_api_id   = "${aws_api_gateway_rest_api.api.id}"
@@ -160,7 +155,7 @@ resource "aws_iam_role_policy_attachment" "lambda-role-policy" {
 }
 
 # --- tables ---
-module "tables" {
-    source = "../simple-tables"
-    names     = var.tables
-}
+#module "tables" {
+#    source = "../simple-tables"
+#    names     = var.tables
+#}
