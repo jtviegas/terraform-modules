@@ -1,6 +1,16 @@
+variable "api-name" {
+  type        = string
+  # default     = "app"
+}
+
+variable "environment" {
+  type        = string
+  # default     = "dev"
+}
+
 variable "region" {
   type        = string
-  # default     = "..."
+  # default     = "eu-west-1"
 }
 
 variable "account-id" {
@@ -8,32 +18,7 @@ variable "account-id" {
   # default     = "..."
 }
 
-variable "environment" {
-  type        = string
-  # default     = "..."
-}
-
-variable "api-name" {
-  type        = string
-  # default     = "..."
-}
-
-variable "lambda-name" {
-  type        = string
-  # default     = "..."
-}
-
 variable "lambda-artifact" {
-  type        = string
-  # default     = "..."
-}
-
-variable "lambda-role" {
-  type        = string
-  # default     = "..."
-}
-
-variable "lambda-role-policy" {
   type        = string
   # default     = "..."
 }

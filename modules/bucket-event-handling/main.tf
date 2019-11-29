@@ -3,17 +3,18 @@ module "bucket" {
   name = "${var.bucket-name}"
 }
 
-module "function-role" {
-  source = "../bucket-event-handling-role"
-  name = "${var.function-role-name}"
-  bucket-id = module.bucket.id
-}
 
 module "function" {
   source = "../simple-function"
   artifact = "${var.function-artifact}"
   name = "${var.function-name}"
   role-arn = "${module.function-role.arn}"
+}
+
+module "function-role" {
+  source = "../bucket-event-handling-role"
+  name = "${var.function-role-name}"
+  bucket-id = module.bucket.id
 }
 
 module "notification" {

@@ -1,5 +1,9 @@
+locals{
+  lambda_name = "entity-loader"
+}
+
 resource "aws_api_gateway_rest_api" "api" {
-  name        = "${var.api-name}"
+  name        = "${var.api-name}-${var.environment}"
 }
 
 resource "aws_api_gateway_resource" "resources-base" {
@@ -95,7 +99,7 @@ resource "aws_lambda_permission" "lambda-permission-resources-id" {
 
 resource "aws_lambda_function" "lambda" {
   filename      = "${var.lambda-artifact}"
-  function_name = "${var.lambda-name}"
+  function_name = "${var.api-name}-${var.environment}-${local.lambda_name}"
   role          = "${aws_iam_role.lambda-role.arn}"
   handler       = "index.handler"
 
@@ -106,7 +110,7 @@ resource "aws_lambda_function" "lambda" {
 }
 
 resource "aws_iam_role" "lambda-role" {
-  name = "${var.lambda-role}"
+  name = "${var.api-name}-${var.environment}-${local.lambda_name}-role"
 
   assume_role_policy = <<POLICY
 {
@@ -127,7 +131,7 @@ POLICY
 
 # --- policies ---
 resource "aws_iam_policy" "lambda-role-policy" {
-  name        = "${var.lambda-role-policy}"
+  name        = "${var.api-name}-${var.environment}-${local.lambda_name}-role-policy"
   policy = <<EOF
 {
   "Version": "2012-10-17",
