@@ -1,5 +1,5 @@
 locals{
-  lambda_name = "entity-loader"
+  lambda_name = "entity-api"
 }
 
 resource "aws_api_gateway_rest_api" "api" {
