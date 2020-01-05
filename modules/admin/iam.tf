@@ -6,7 +6,7 @@ locals {
 
 # --- users ---
 resource "aws_iam_user" "admin" {
-  name = "${local.admin_user}"
+  name = "${var.project}-${local.admin_user}"
 }
 
 resource "aws_iam_user_login_profile" "admin" {
