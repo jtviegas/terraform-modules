@@ -18,7 +18,7 @@ resource "aws_iam_user_login_profile" "admin" {
 
 # --- groups ---
 resource "aws_iam_group" "admins" {
-  name = "${local.admin_group}"
+  name = "${var.project}-${local.admin_group}"
 }
 
 # --- users <-> groups ---
