@@ -6,7 +6,7 @@ locals {
 
 # --- users ---
 resource "aws_iam_user" "admin" {
-  name = "${var.project}-${local.admin_user}"
+  name = "${local.admin_user}"
 }
 
 resource "aws_iam_user_login_profile" "admin" {
@@ -18,7 +18,7 @@ resource "aws_iam_user_login_profile" "admin" {
 
 # --- groups ---
 resource "aws_iam_group" "admins" {
-  name = "${var.project}-${local.admin_group}"
+  name = "${local.admin_group}"
 }
 
 # --- users <-> groups ---
@@ -32,7 +32,7 @@ resource "aws_iam_user_group_membership" "admin" {
 # --- policies ---
 
 resource "aws_iam_policy" "admins" {
-  name        = "${var.project}-${local.admin_policy}"
+  name        = "${local.admin_policy}"
   description = "maintainers policy allowing buckets rw and logging"
   policy = <<EOF
 {
