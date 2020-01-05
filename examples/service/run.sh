@@ -21,6 +21,8 @@ _pwd=$(pwd)
 
 svn export "$MODULES_URL" "$this_folder/$MODULES_DIR"
 
+
+
 if [ "$1" == "deploy" ]; then
     terraform init
     terraform plan
@@ -29,6 +31,9 @@ else
     terraform destroy -auto-approve -lock=true -lock-timeout=10m
 fi
 
+
+
 rm -rf "$this_folder/$MODULES_DIR"
+
 cd "$_pwd"
 echo "...[ $0 $1 ] done."

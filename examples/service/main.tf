@@ -15,7 +15,7 @@ provider "aws" {
 
 module "bucket-event-handling" {
   source = "./modules/bucket-event-handling"
-  
+
   bucket-name = "${var.app}-${var.env}-bucket"
   table-name = "${var.app}-${var.env}-parts"
   function-role-name = "${var.app}-${var.env}-function-role"

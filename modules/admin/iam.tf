@@ -32,7 +32,7 @@ resource "aws_iam_user_group_membership" "admin" {
 # --- policies ---
 
 resource "aws_iam_policy" "admins" {
-  name        = "${local.admin_policy}"
+  name        = "${var.project}-${local.admin_policy}"
   description = "maintainers policy allowing buckets rw and logging"
   policy = <<EOF
 {
