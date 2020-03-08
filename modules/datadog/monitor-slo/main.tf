@@ -14,7 +14,7 @@
 resource "datadog_service_level_objective" "service-uptime" {
   name               = "${var.team} ${var.project} ${var.service-name} => uptime"
   type               = "monitor"
-  description        = "uptime SLO for {var.team} ${var.project} ${var.service-name}"
+  description        = "uptime SLO for ${var.team} ${var.project} ${var.service-name}"
   monitor_ids = [ var.monitor-id ]
 
   thresholds {
@@ -25,6 +25,12 @@ resource "datadog_service_level_objective" "service-uptime" {
 
   thresholds {
     timeframe = "30d"
+    target = var.target-threshold
+    warning = var.warning-threshold
+  }
+
+  thresholds {
+    timeframe = "90d"
     target = var.target-threshold
     warning = var.warning-threshold
   }
