@@ -36,5 +36,3 @@ resource "datadog_monitor" "service-uptime" {
     critical_recovery = 1
   }
 }
-
-}
