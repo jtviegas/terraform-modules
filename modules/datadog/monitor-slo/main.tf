@@ -24,7 +24,7 @@ resource "datadog_service_level_objective" "service-uptime" {
   }
 
   thresholds {
-    timeframe = "7d"
+    timeframe = "30d"
     target = var.target-threshold
     warning = var.warning-threshold
   }
