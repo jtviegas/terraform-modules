@@ -1,4 +1,4 @@
-
+# ARM_ACCESS_KEY
 resource "azurerm_storage_account" "main" {
   name                     = "${var.storage-account-name}"
   resource_group_name      = "${var.resource-group-name}"
