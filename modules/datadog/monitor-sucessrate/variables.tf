@@ -20,20 +20,20 @@ variable "project" {
 
 variable "critical-threshold" {
   type        = number
-  default     = 99.0
+  default     = 0.990
 }
 
 variable "critical-recovery" {
   type        = number
-  default     = 99.1
+  default     = 0.991
 }
 
 variable "warning-threshold" {
   type        = number
-  default     = 99.5
+  default     = 0.995
 }
 
 variable "warning-recovery" {
   type        = number
-  default     = 99.6
+  default     = 0.996
 }
