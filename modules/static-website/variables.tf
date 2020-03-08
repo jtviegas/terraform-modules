@@ -1,10 +1,10 @@
 variable "bucket-name" {
   type        = string
-  default     = "tgedr-test02"
+  default     = "jettevisti-website"
 }
 variable "domain-name" {
   type        = string
-  default     = "tgedr.com"
+  default     = "jettevisti.com"
 }
 
 
