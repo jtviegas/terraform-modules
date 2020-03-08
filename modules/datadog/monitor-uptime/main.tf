@@ -15,7 +15,7 @@
 resource "datadog_monitor" "service-uptime" {
   name               = "${var.service-name} => uptime"
   type               = "query alert"
-  query = "avg(last_1m):min:kubernetes.pods.running{kube_service:${var.service-name},project:{$var.project}}.fill(zero, 60) < 0.99"
+  query = "avg(last_1m):min:kubernetes.pods.running{kube_service:${var.service-name},project:${var.project}}.fill(zero, 60) < 0.99"
   message            = "{{#is_alert}}\nplease check ${var.service-name} instance count !\n{{/is_alert}}\n{{#is_recovery}}\n${var.service-name} instance count has recovered !\n{{/is_recovery}}\n\nNotify: ${var.notification-list}"
   include_tags = true
   tags = ["team:${var.team}", "project:${var.project}", "service:${var.service-name}", "uptime"]
