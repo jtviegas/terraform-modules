@@ -22,7 +22,6 @@ resource "datadog_monitor" "service-uptime" {
   notify_audit = true
   locked = true
   timeout_h = 0
-  silenced = {}
   no_data_timeframe = 5
   require_full_window = true
   new_host_delay = 300
