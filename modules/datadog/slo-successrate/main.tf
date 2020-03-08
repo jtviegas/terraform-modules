@@ -12,8 +12,8 @@
 #  }
 #}
 resource "datadog_service_level_objective" "service-successrate" {
-  name               = "${var.team} ${var.project} ${var.service-name} => uptime"
-  type               = "monitor"
+  name               = "${var.team} ${var.project} ${var.service-name} => sucess rate"
+  type               = "metric"
   description        = "uptime SLO for ${var.team} ${var.project} ${var.service-name}"
   query {
     numerator = "sum:trace.servlet.request.hits.by_http_status{http.status_class:2xx,service:${var.service-name},project:${var.project}}.as_count()"
