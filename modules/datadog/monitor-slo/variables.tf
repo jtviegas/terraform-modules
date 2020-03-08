@@ -19,11 +19,11 @@ variable "project" {
 
 variable "target-threshold" {
   type        = number
-  default     = 99.98
+  default     = 99.8
 }
 
 variable "warning-threshold" {
   type        = number
-  default     = 99.99
+  default     = 99.9
 }
 
