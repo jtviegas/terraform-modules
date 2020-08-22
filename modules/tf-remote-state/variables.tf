@@ -1,6 +1,6 @@
 variable "environment" {
   description = "the deployment environment"
-  # dev | pro
+  # dev | prod | sit | spt
   type        = string
   # default     = "dev"
 }

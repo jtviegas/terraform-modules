@@ -7,8 +7,13 @@
 
 # .tfvars files
 *.tfvars
+
+coverage
 .DS_Store
 terraform.tfstate.backup
 terraform.tfstate
 .idea
 *.secret
+secrets.inc
+helloworld.zip
+bashutils.inc

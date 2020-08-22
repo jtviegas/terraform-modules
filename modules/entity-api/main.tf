@@ -1,4 +1,4 @@
-locals{
+locals {
   lambda_name = "entity-api"
 }
 

@@ -30,9 +30,9 @@ test_folder=$(dirname "$parent_folder")
 MODULES_DIR=modules
 MODULES_URL=https://github.com/jtviegas/terraform-modules/trunk/modules
 
-if [ -f "$test_folder/include.secret" ]; then
-    debug "we have an 'include.secret' file"
-    . "$test_folder/include.secret"
+if [ -f "$test_folder/secrets.inc" ]; then
+    debug "we have an 'secrets.inc' file"
+    . "$test_folder/secrets.inc"
 fi
 
 info "starting [ $0 $1 ] ..."

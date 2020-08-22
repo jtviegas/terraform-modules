@@ -18,7 +18,7 @@ variable "region" {
 }
 
 resource "azurerm_resource_group" "main" {
-  name     = "${var.app}0${var.env}"
+    name     = "${var.app}0${var.env}"
   location = "${var.region}"
 }
 
