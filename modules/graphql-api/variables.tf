@@ -38,14 +38,3 @@ variable "function-timeout" {
   # default     = 60
 }
 
-variable "account-id" {
-  type        = string
-  # default     = "..."
-}
-
-
-#variable "tables" {
-#  description = "tables to be created as part of the app"
-#  type        = list(string)
-  # default     = ["neo", "trinity", "morpheus"]
-#}

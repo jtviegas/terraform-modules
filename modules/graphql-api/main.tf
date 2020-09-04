@@ -103,10 +103,3 @@ resource "aws_lambda_permission" "root-function-permission" {
   source_arn = "${aws_api_gateway_rest_api.api.execution_arn}/*/*/*"
 }
 
-
-
-# --- tables ---
-#module "tables" {
-#    source = "../simple-tables"
-#    names     = var.tables
-#}

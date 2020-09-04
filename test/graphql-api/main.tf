@@ -8,7 +8,6 @@ module "graphql-api" {
   function-runtime = "${var.function-runtime}"
   function-memory = "${var.function-memory}"
   function-timeout = "${var.function-timeout}"
-  account-id = "${var.accountid}"
 }
 
 output "endpoint" {

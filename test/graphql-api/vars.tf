@@ -38,7 +38,3 @@ variable "function-timeout" {
   default     = 30
 }
 
-variable "accountid" {
-  type        = string
-  # default     = "..."
-}
