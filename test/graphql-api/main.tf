@@ -1,5 +1,5 @@
 module "graphql-api" {
-  source = "../../modules/graphql-api"
+  source = "../../modules/aws/graphql-api"
   api = "${var.api}"
   environment = "${var.environment}"
   function = "${var.function}"
