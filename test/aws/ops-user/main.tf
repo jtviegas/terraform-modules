@@ -1,18 +1,30 @@
-
-
-module "remote-state" {
-  source = "./modules/azure/tf-remote-state-v2"
-  env = "${var.env}"
-  team = "${var.team}"
-  project = "${var.project}"
-  app = "${var.app}"
-  storage-account-name = "${var.storage-account-name}"
-  storage-container-name = "${var.storage-container-name}"
-  resource-group-name = "${var.resource-group}"
-  resource-group-region = "${var.region}"
+variable "region" {
+  type      = string
 }
 
-output "storage-account-access-key" {
-  value = module.remote-state.storage-account-access-key
+variable "user_public_key" {
+  type      = string
 }
 
+variable "user_name" {
+  type      = string
+}
+
+variable "group_name" {
+  type      = string
+}
+
+provider "aws" {
+  region = var.region
+}
+
+module "ops_user" {
+  source = "./modules/aws/ops-user"
+  group_name = var.group_name
+  user_name = var.user_name
+  user_public_key = var.user_public_key
+}
+
+output "password" {
+  value = module.ops_user.password
+}

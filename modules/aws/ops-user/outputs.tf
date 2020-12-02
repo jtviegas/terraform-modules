@@ -1,4 +1,4 @@
-output "admin_pswd" {
-  value       = aws_iam_user_login_profile.admin.encrypted_password
-  description = "admin encrypted password"
+output "password" {
+  value       = aws_iam_user_login_profile.user_profile.encrypted_password
+  description = "user encrypted password"
 }

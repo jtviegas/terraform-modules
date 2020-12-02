@@ -1,3 +1,10 @@
+variable "region" {
+  type      = string
+}
+variable "group_name" {
+  type      = string
+}
+
 provider "aws" {
   region = var.region
 }

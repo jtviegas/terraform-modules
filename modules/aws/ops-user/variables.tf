@@ -1,10 +1,13 @@
 
-variable "admin-public-key" {
-  description = "admin public key to encrypt password, using keybase one"
+variable "user_public_key" {
+  description = "Either a base-64 encoded PGP public key, or a keybase username in the form keybase:username"
   type        = string
-  # default     = "keybase:jtviegas"
 }
 
-variable "user-name" {
+variable "user_name" {
+  type        = string
+}
+
+variable "group_name" {
   type        = string
 }
