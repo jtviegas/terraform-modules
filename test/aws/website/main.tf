@@ -1,3 +1,7 @@
+provider "aws" {
+  region = var.region
+}
+
 variable "region" {
   type      = string
 }
@@ -6,8 +10,12 @@ variable "bucket_name" {
   type        = string
 }
 
-provider "aws" {
-  region = var.region
+variable "domain_name" {
+  type        = string
+}
+
+variable "subdomain_name" {
+  type        = string
 }
 
 module "website" {

@@ -2,11 +2,13 @@ variable "bucket_name" {
   type        = string
 }
 
-/*
-variable "domain-name" {
+
+variable "domain_name" {
   type        = string
-  default     = "jettevisti.com"
 }
-*/
+
+variable "subdomain_name" {
+  type        = string
+}
 
 
