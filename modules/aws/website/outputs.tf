@@ -21,4 +21,7 @@ output "hosted_zone_id" {
   description = "the website route 53 hosted zone id"
 }
 
+output "domain_validation_options" {
+  value = aws_acm_certificate.domain_certificate.domain_validation_options
+}
 

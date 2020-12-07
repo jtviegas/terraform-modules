@@ -32,3 +32,7 @@ output "arn" {
 output "endpoint" {
   value = module.website.endpoint
 }
+
+output "domain_validation_options" {
+  value = module.website.domain_validation_options
+}
