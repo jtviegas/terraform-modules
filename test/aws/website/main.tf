@@ -21,6 +21,8 @@ variable "subdomain_name" {
 module "website" {
   source = "./modules/aws/website"
   bucket_name = var.bucket_name
+  subdomain_name = var.subdomain_name
+  domain_name = var.domain_name
 }
 
 output "arn" {

@@ -107,6 +107,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
 
 }
 
+/*
 resource "aws_route53_zone" "subdomain" {
   name = "${var.subdomain_name}.${var.domain_name}"
 }
@@ -126,8 +127,8 @@ resource "aws_route53_record" "subdomain" {
   }
 
 }
+*/
 
-/*
 resource "aws_route53_record" "website-cname" {
   zone_id = data.aws_route53_zone.zone.zone_id
   name    = var.domain_name
@@ -141,5 +142,5 @@ resource "aws_route53_record" "website-cname" {
     evaluate_target_health = false
   }
 }
-*/
+
 
