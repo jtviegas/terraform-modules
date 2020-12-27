@@ -4,9 +4,6 @@
 # http://bash.cumulonim.biz/NullGlob.html
 shopt -s nullglob
 
-# ---------- CONSTANTS ----------
-MODULES_URL=https://github.com/jtviegas/terraform-modules/branches/zero_thirteen/modules
-# -------------------------------
 
 if [ -z "$this_folder" ]; then
   this_folder="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
@@ -14,6 +11,13 @@ if [ -z "$this_folder" ]; then
     this_folder=$(dirname $(readlink -f $0))
   fi
 fi
+parent_folder=$(dirname "$this_folder")
+
+# ---------- CONSTANTS ----------
+MODULES_URL=https://github.com/jtviegas/terraform-modules/branches/zero_thirteen/modules
+MODULES_DIR="${this_folder}/modules"
+MODE=LOCAL # LOCAL or REMOTE
+# -------------------------------
 
 debug(){
     local __msg="$@"
@@ -49,6 +53,44 @@ EOM
   exit 1
 }
 
+fetchModules()
+{
+  info "[fetchModules|in] (MODE: $MODE)"
+  if [ "$MODE" == "REMOTE" ];then
+    svn export "$MODULES_URL" "modules"
+  else
+    cp -R "$MODULES_DIR" "modules"
+  fi
+  info "[fetchModules|out]"
+}
+
+testOn()
+{
+  info "[testOn|in]"
+  cd "$test_dir"
+  fetchModules
+  terraform init
+  terraform plan -var-file="main.tfvars"
+  terraform apply -auto-approve -lock=true -lock-timeout=10m -var-file="main.tfvars"
+  terraform output
+  rm -rf "modules"
+  cd "$_pwd"
+  info "[testOn|out]"
+}
+
+testOff()
+{
+  info "[testOff|in]"
+  cd "$test_dir"
+  fetchModules
+  terraform init
+  terraform destroy -auto-approve -lock=true -lock-timeout=10m -var-file="main.tfvars"
+  rm -rf "modules"
+  cd "$_pwd"
+  info "[testOff|out]"
+}
+
+
 [ -z "$2" ] && { usage; }
 
 module_dir="$1"
@@ -67,32 +109,6 @@ fi
 
 info "starting [ $0 $1 $2 ] ..."
 _pwd=$(pwd)
-
-testOn()
-{
-  info "[testOn|in]"
-  cd "$test_dir"
-  svn export "$MODULES_URL" "modules"
-  terraform init
-  terraform plan -var-file="main.tfvars"
-  terraform apply -auto-approve -lock=true -lock-timeout=10m -var-file="main.tfvars"
-  terraform output
-  rm -rf "modules"
-  cd "$_pwd"
-  info "[testOn|out]"
-}
-
-testOff()
-{
-  info "[testOff|in]"
-  cd "$test_dir"
-  svn export "$MODULES_URL" "modules"
-  terraform init
-  terraform destroy -auto-approve -lock=true -lock-timeout=10m -var-file="main.tfvars"
-  rm -rf "modules"
-  cd "$_pwd"
-  info "[testOff|out]"
-}
 
 case "$2" in
       on)

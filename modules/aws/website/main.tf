@@ -18,12 +18,10 @@ resource "aws_s3_bucket" "website_bucket" {
 
 }
 
-
-data "aws_route53_zone" "zone" {
+data "aws_route53_zone" "domain_zone" {
   name         = var.domain_name
   private_zone = false
 }
-
 
 resource "aws_acm_certificate" "domain_certificate" {
   domain_name       = var.domain_name
@@ -34,34 +32,37 @@ resource "aws_acm_certificate" "domain_certificate" {
   }
 }
 
+
 resource "aws_route53_record" "domain_record" {
-  depends_on = [aws_s3_bucket.website_bucket, aws_acm_certificate.domain_certificate]
-  name    = aws_acm_certificate.domain_certificate.domain_validation_options.0.resource_record_name
-  type    = aws_acm_certificate.domain_certificate.domain_validation_options.0.resource_record_type
-  zone_id = data.aws_route53_zone.zone.id
-  records = [ aws_acm_certificate.domain_certificate.domain_validation_options.0.resource_record_value ]
+  depends_on = [aws_acm_certificate.domain_certificate]
+  name    = "${tolist(aws_acm_certificate.domain_certificate.domain_validation_options)[0].resource_record_name}"
+  type    = "${tolist(aws_acm_certificate.domain_certificate.domain_validation_options)[0].resource_record_type}"
+  zone_id = data.aws_route53_zone.domain_zone.id
+  records = [ "${tolist(aws_acm_certificate.domain_certificate.domain_validation_options)[0].resource_record_value}" ]
   ttl     = 2400
 }
 
-resource "aws_acm_certificate_validation" "domain_validation" {
+
+resource "aws_acm_certificate_validation" "domain_certificate_validation" {
   depends_on = [aws_route53_record.domain_record]
   certificate_arn         = aws_acm_certificate.domain_certificate.arn
   validation_record_fqdns = [ aws_route53_record.domain_record.fqdn ]
 }
 
-resource "aws_cloudfront_origin_access_identity" "origin_access_identity" {
-  comment = "Some comment"
+
+resource "aws_cloudfront_origin_access_identity" "cloudfront_origin_access_id" {
+  comment = "...bla bla..."
 }
 
-resource "aws_cloudfront_distribution" "s3_distribution" {
+resource "aws_cloudfront_distribution" "s3_certificate_distribution" {
 
-  depends_on = [aws_acm_certificate_validation.domain_validation, aws_cloudfront_origin_access_identity.origin_access_identity]
+  depends_on = [aws_acm_certificate_validation.domain_certificate_validation, aws_cloudfront_origin_access_identity.cloudfront_origin_access_id, aws_s3_bucket.website_bucket]
 
   origin {
     domain_name = aws_s3_bucket.website_bucket.bucket_domain_name
     origin_id   = "S3-${aws_s3_bucket.website_bucket.id}"
     s3_origin_config {
-      origin_access_identity = aws_cloudfront_origin_access_identity.origin_access_identity.cloudfront_access_identity_path
+      origin_access_identity = aws_cloudfront_origin_access_identity.cloudfront_origin_access_id.cloudfront_access_identity_path
     }
   }
 
@@ -107,7 +108,29 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
 
 }
 
+resource "aws_route53_record" "website-cname" {
+  zone_id = data.aws_route53_zone.domain_zone.zone_id
+  name    = var.domain_name
+  type    = "A"
+
+  depends_on = [aws_cloudfront_distribution.s3_certificate_distribution]
+  #records        = ["${aws_cloudfront_distribution.s3_certificate_distribution.domain_name}"]
+  alias {
+    name                   = aws_cloudfront_distribution.s3_certificate_distribution.domain_name
+    zone_id                = aws_cloudfront_distribution.s3_certificate_distribution.hosted_zone_id
+    evaluate_target_health = false
+  }
+}
+
+
+
+
+
+
+
+
 /*
+
 resource "aws_route53_zone" "subdomain" {
   name = "${var.subdomain_name}.${var.domain_name}"
 }
@@ -118,29 +141,14 @@ resource "aws_route53_record" "subdomain" {
   type            = "NS"
   zone_id         = aws_route53_zone.subdomain.zone_id
 
-  depends_on = [aws_cloudfront_distribution.s3_distribution]
-  #records        = ["${aws_cloudfront_distribution.s3_distribution.domain_name}"]
+  depends_on = [aws_cloudfront_distribution.s3_certificate_distribution]
+  #records        = ["${aws_cloudfront_distribution.s3_certificate_distribution.domain_name}"]
   alias {
-    name                   = aws_cloudfront_distribution.s3_distribution.domain_name
-    zone_id                = aws_cloudfront_distribution.s3_distribution.hosted_zone_id
+    name                   = aws_cloudfront_distribution.s3_certificate_distribution.domain_name
+    zone_id                = aws_cloudfront_distribution.s3_certificate_distribution.hosted_zone_id
     evaluate_target_health = false
   }
 
 }
+
 */
-
-resource "aws_route53_record" "website-cname" {
-  zone_id = data.aws_route53_zone.zone.zone_id
-  name    = var.domain_name
-  type    = "A"
-
-  depends_on = [aws_cloudfront_distribution.s3_distribution]
-  #records        = ["${aws_cloudfront_distribution.s3_distribution.domain_name}"]
-  alias {
-    name                   = aws_cloudfront_distribution.s3_distribution.domain_name
-    zone_id                = aws_cloudfront_distribution.s3_distribution.hosted_zone_id
-    evaluate_target_health = false
-  }
-}
-
-
