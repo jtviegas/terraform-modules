@@ -7,15 +7,8 @@ terraform {
   }
 }
 
-resource "aws_s3_bucket" "website_bucket" {
+data "aws_s3_bucket" "website_bucket" {
   bucket = var.bucket_name
-  acl    = "public-read"
-  force_destroy = true
-
-  website {
-    index_document = "index.html"
-  }
-
 }
 
 data "aws_route53_zone" "domain_zone" {
@@ -26,12 +19,10 @@ data "aws_route53_zone" "domain_zone" {
 resource "aws_acm_certificate" "domain_certificate" {
   domain_name       = var.domain_name
   validation_method = "DNS"
-
   lifecycle {
     create_before_destroy = true
   }
 }
-
 
 resource "aws_route53_record" "domain_record" {
   depends_on = [aws_acm_certificate.domain_certificate]
@@ -56,11 +47,11 @@ resource "aws_cloudfront_origin_access_identity" "cloudfront_origin_access_id" {
 
 resource "aws_cloudfront_distribution" "s3_certificate_distribution" {
 
-  depends_on = [aws_acm_certificate_validation.domain_certificate_validation, aws_cloudfront_origin_access_identity.cloudfront_origin_access_id, aws_s3_bucket.website_bucket]
+  depends_on = [aws_acm_certificate_validation.domain_certificate_validation, aws_cloudfront_origin_access_identity.cloudfront_origin_access_id, data.aws_s3_bucket.website_bucket ]
 
   origin {
-    domain_name = aws_s3_bucket.website_bucket.bucket_domain_name
-    origin_id   = "S3-${aws_s3_bucket.website_bucket.id}"
+    domain_name = data.aws_s3_bucket.website_bucket.bucket_domain_name
+    origin_id   = "S3-${data.aws_s3_bucket.website_bucket.id}"
     s3_origin_config {
       origin_access_identity = aws_cloudfront_origin_access_identity.cloudfront_origin_access_id.cloudfront_access_identity_path
     }
@@ -75,7 +66,7 @@ resource "aws_cloudfront_distribution" "s3_certificate_distribution" {
   default_cache_behavior {
     allowed_methods  = ["GET", "HEAD"]
     cached_methods   = ["GET", "HEAD"]
-    target_origin_id = "S3-${aws_s3_bucket.website_bucket.id}"
+    target_origin_id = "S3-${data.aws_s3_bucket.website_bucket.id}"
     forwarded_values {
       query_string = false
       cookies {
@@ -88,7 +79,6 @@ resource "aws_cloudfront_distribution" "s3_certificate_distribution" {
     default_ttl            = 3600
     max_ttl                = 86400
   }
-
 
   tags = {
     env = "dev"
@@ -114,7 +104,6 @@ resource "aws_route53_record" "website-cname" {
   type    = "A"
 
   depends_on = [aws_cloudfront_distribution.s3_certificate_distribution]
-  #records        = ["${aws_cloudfront_distribution.s3_certificate_distribution.domain_name}"]
   alias {
     name                   = aws_cloudfront_distribution.s3_certificate_distribution.domain_name
     zone_id                = aws_cloudfront_distribution.s3_certificate_distribution.hosted_zone_id
