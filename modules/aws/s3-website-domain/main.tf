@@ -59,7 +59,7 @@ resource "aws_cloudfront_distribution" "s3_certificate_distribution" {
 
   enabled             = true
   is_ipv6_enabled     = true
-  comment             = "cloud distribution for s3-certificate"
+  comment             = "cloud distribution for s3"
   default_root_object = "index.html"
   aliases = [ var.domain_name ]
 
@@ -70,7 +70,7 @@ resource "aws_cloudfront_distribution" "s3_certificate_distribution" {
     forwarded_values {
       query_string = false
       cookies {
-        forward = "none"
+        forward = "all"
       }
     }
 
