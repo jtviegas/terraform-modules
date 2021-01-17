@@ -10,15 +10,14 @@ variable "bucket_name" {
   type        = string
 }
 
-variable "bucket_content_dir" {
+variable "index_html" {
   type        = string
 }
-
 
 module "s3_website" {
   source = "./modules/aws/s3-website"
   bucket_name = var.bucket_name
-  bucket_content_dir = var.bucket_content_dir
+  index_html = var.index_html
 }
 
 output "arn" {

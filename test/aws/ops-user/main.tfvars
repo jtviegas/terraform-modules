@@ -1,4 +1,4 @@
-region = "eu-west-1"
+region = "eu-north-1"
 user_public_key = "keybase:jtviegas"
-group_name = "devops_test"
+group_name = "devops"
 user_name = "root"

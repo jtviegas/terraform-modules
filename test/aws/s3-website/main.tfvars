@@ -1,3 +1,3 @@
-region = "us-east-1"
-bucket_name = "s3website.tgedr.com"
-bucket_content_dir = "content"
+region = "eu-north-1"
+bucket_name = "website.tgedr.com"
+index_html = "index.html"

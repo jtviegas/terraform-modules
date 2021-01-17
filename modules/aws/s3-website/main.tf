@@ -19,11 +19,13 @@ resource "aws_s3_bucket" "website_bucket" {
 }
 
 resource "aws_s3_bucket_object" "website_content" {
-  for_each = fileset(var.bucket_content_dir, "*")
   bucket = aws_s3_bucket.website_bucket.id
-  key = each.value
-  source = "${var.bucket_content_dir}/${each.value}"
-  etag = filemd5("${var.bucket_content_dir}/${each.value}")
+  key = "index.html"
+  source = var.index_html
   acl    = "public-read"
+  content_type = "text/html"
+  storage_class = "STANDARD"
+  etag = filemd5("index.html")
+  force_destroy = true
 }
 
