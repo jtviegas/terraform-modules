@@ -95,15 +95,9 @@ testOff()
 
 module_dir="$1"
 test_dir="${this_folder}/test/$1"
-src_dir="${this_folder}/modules/$1"
 
 if [ ! -d "$test_dir" ]; then
   err "not a test folder: $test_dir"
-  exit 1
-fi
-
-if [ ! -d "$src_dir" ]; then
-  err "not a module folder: $src_dir"
   exit 1
 fi
 
