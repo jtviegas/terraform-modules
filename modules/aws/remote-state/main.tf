@@ -8,7 +8,7 @@ terraform {
 }
 
 resource "aws_s3_bucket" "terraform_state" {
-  bucket = "terraform-state-${var.solution}-${var.environment}"
+  bucket = "terraform-state-${var.solution}"
 
   force_destroy = true
 
@@ -29,7 +29,7 @@ resource "aws_s3_bucket" "terraform_state" {
 }
 
 resource "aws_dynamodb_table" "terraform_state_lock" {
-  name           = "terraform_state_lock_${var.solution}_${var.environment}"
+  name           = "terraform-state-lock-${var.solution}"
   billing_mode = "PAY_PER_REQUEST"
   hash_key     = "LockID"
 

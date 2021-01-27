@@ -1,3 +1,3 @@
 region = "us-east-1"
-bucket_name = "s3website.tgedr.com"
-domain_name = "tgedr.com"
+bucket_name = "jettevisti.net"
+domain_name = "jettevisti.net"

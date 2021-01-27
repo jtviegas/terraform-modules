@@ -2,10 +2,6 @@ provider "aws" {
   region = var.region
 }
 
-variable "environment" {
-  type      = string
-}
-
 variable "solution" {
   type        = string
 }
@@ -16,7 +12,6 @@ variable "region" {
 
 module "remote_state" {
   source = "./modules/aws/remote-state"
-  environment = var.environment
   solution = var.solution
 }
 

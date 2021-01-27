@@ -1,3 +1,3 @@
-region = "eu-north-1"
-bucket_name = "website.jettevisti.com"
+region = "us-east-1"
+bucket_name = "jettevisti.net"
 index_html = "index.html"

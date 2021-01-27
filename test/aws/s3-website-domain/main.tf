@@ -1,17 +1,25 @@
+terraform {
+  backend "s3" {
+    bucket = "terraform-state-jettevisti"
+    key    = "s3-website-domain"
+    region = "eu-north-1"
+  }
+}
+
 provider "aws" {
-  region = var.region
+  region  = var.region
 }
 
 variable "region" {
-  type      = string
+  type    = string
 }
 
 variable "bucket_name" {
-  type        = string
+  type    = string
 }
 
 variable "domain_name" {
-  type        = string
+  type    = string
 }
 
 module "s3_website_domain" {

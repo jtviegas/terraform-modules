@@ -1,3 +1,11 @@
+terraform {
+  backend "s3" {
+    bucket = "terraform-state-jettevisti"
+    key    = "s3-website"
+    region = "eu-north-1"
+  }
+}
+
 provider "aws" {
   region = var.region
 }
@@ -29,5 +37,5 @@ output "endpoint" {
 }
 
 output "domain" {
-  value       = module.s3_website.domain
+  value = module.s3_website.domain
 }
