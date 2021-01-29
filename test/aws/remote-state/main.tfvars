@@ -1,2 +1,2 @@
 region = "eu-north-1"
-solution = "jettevisti"
+solution = "s3website"

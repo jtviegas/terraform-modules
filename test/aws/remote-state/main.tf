@@ -1,13 +1,13 @@
-provider "aws" {
-  region = var.region
+variable "region" {
+  type    = string
 }
 
 variable "solution" {
-  type        = string
+  type    = string
 }
 
-variable "region" {
-  type        = string
+provider "aws" {
+  region  = var.region
 }
 
 module "remote_state" {
