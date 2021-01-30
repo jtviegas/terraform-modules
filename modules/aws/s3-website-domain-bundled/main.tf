@@ -68,7 +68,7 @@ resource "aws_cloudfront_distribution" "s3_certificate_distribution" {
   depends_on = [aws_acm_certificate_validation.domain_certificate_validation, aws_cloudfront_origin_access_identity.cloudfront_origin_access_id, aws_s3_bucket.website_bucket ]
 
   origin {
-    domain_name = aws_s3_bucket.website_bucket.website_endpoint
+    domain_name = aws_s3_bucket.website_bucket.website_domain
     origin_id   = "S3-${aws_s3_bucket.website_bucket.id}"
   }
 
