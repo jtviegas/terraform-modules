@@ -21,3 +21,11 @@ output "group_id" {
 output "group_arn" {
   value = module.ops_group.group_arn
 }
+
+output "role_id" {
+  value = module.ops_group.role_id
+}
+
+output "role_arn" {
+  value = module.ops_group.role_arn
+}

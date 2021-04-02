@@ -12,10 +12,27 @@ resource "aws_iam_group" "admin" {
   name = var.group_name
 }
 
+# --- roles ---
+data "aws_iam_policy_document" "instance_assume_role_policy" {
+  statement {
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["ec2.amazonaws.com"]
+    }
+  }
+}
+
+resource "aws_iam_role" "admin_role" {
+  name                = "aws_iam_role_${var.group_name}"
+  assume_role_policy = data.aws_iam_policy_document.instance_assume_role_policy.json
+}
+
 # --- policies ---
 
-resource "aws_iam_policy" "admin_group" {
-  name        = "aws_iam_policy_group_${var.group_name}"
+resource "aws_iam_policy" "admin_group_main" {
+  name        = "aws_iam_policy_group_main_${var.group_name}"
   description = "maintainers policy allowing buckets rw and logging"
   policy = <<EOF
 {
@@ -183,7 +200,20 @@ resource "aws_iam_policy" "admin_group" {
                 "datapipeline:DeletePipeline"
             ],
             "Resource": "*"
-        },
+        }
+    ]
+}
+EOF
+}
+
+resource "aws_iam_policy" "admin_group_route53" {
+  name        = "aws_iam_policy_group_route53_${var.group_name}"
+  description = "maintainers policy allowing route53 operations"
+  policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+
         {
             "Sid": "VisualEditor4",
             "Effect": "Allow",
@@ -259,16 +289,65 @@ resource "aws_iam_policy" "admin_group" {
 EOF
 }
 
+resource "aws_iam_policy" "admin_group_amplify" {
+  name        = "aws_iam_policy_group_amplify_${var.group_name}"
+  description = "maintainers policy allowing amplify operations"
+  policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+          "Sid": "VisualEditor7",
+          "Effect": "Allow",
+          "Action": [
+            "amplify:GetJob",
+            "amplify:ListArtifacts",
+            "amplify:ListJobs",
+            "amplify:DeleteJob",
+            "amplify:StartDeployment",
+            "amplify:CreateDeployment",
+            "amplify:CreateApp",
+            "amplify:StartJob",
+            "amplify:ListApps",
+            "amplify:GetApp",
+            "amplify:StopJob",
+            "amplify:UpdateApp"
+          ],
+          "Resource": "*"
+        }
 
-# --- policies <-> groups ---
-resource "aws_iam_group_policy_attachment" "admin" {
-  group      = "${aws_iam_group.admin.name}"
-  policy_arn = "${aws_iam_policy.admin_group.arn}"
+    ]
+}
+EOF
 }
 
 
-
-
+# --- policies <-> groups ---
+resource "aws_iam_group_policy_attachment" "admin_group_main" {
+  group      = aws_iam_group.admin.name
+  policy_arn = aws_iam_policy.admin_group_main.arn
+}
+resource "aws_iam_group_policy_attachment" "admin_group_route53" {
+  group      = aws_iam_group.admin.name
+  policy_arn = aws_iam_policy.admin_group_route53.arn
+}
+resource "aws_iam_group_policy_attachment" "admin_group_amplify" {
+  group      = aws_iam_group.admin.name
+  policy_arn = aws_iam_policy.admin_group_amplify.arn
+}
+# --- policies <-> roles ---
+resource "aws_iam_role_policy_attachment" "admin_group_main" {
+  role       = aws_iam_role.admin_role.name
+  policy_arn = aws_iam_policy.admin_group_main.arn
+}
+resource "aws_iam_role_policy_attachment" "admin_group_route53" {
+  role       = aws_iam_role.admin_role.name
+  policy_arn = aws_iam_policy.admin_group_route53.arn
+}
+resource "aws_iam_role_policy_attachment" "admin_group_amplify" {
+  role       = aws_iam_role.admin_role.name
+  policy_arn = aws_iam_policy.admin_group_amplify.arn
+}
 
 
 

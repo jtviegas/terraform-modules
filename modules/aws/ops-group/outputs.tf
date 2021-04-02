@@ -1,6 +1,6 @@
 output "group_id" {
   value       = aws_iam_group.admin.id
-  description = "The group's ID"
+  description = "The group ID"
 }
 
 output "group_arn" {
@@ -13,3 +13,12 @@ output "group_unique_id" {
   description = "The unique ID assigned by AWS"
 }
 
+output "role_id" {
+  value       = aws_iam_role.admin_role.id
+  description = "The role ID"
+}
+
+output "role_arn" {
+  value       = aws_iam_role.admin_role.arn
+  description = "The role arn"
+}
