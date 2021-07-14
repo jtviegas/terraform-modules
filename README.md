@@ -51,19 +51,7 @@ example:
 
 #### suggested usage
 
-- add main profile in `.variables`
-- create group
-- create user
-  - in aws IAM create keys for the user just created 
-  - create aws user profile:
-    - ex: `aws configure --profile tgedr`
-    - ...and add it to `.variables`
-- create remote state
-- create s3-website for an SPA
-- create a certificate for a domain name
-- distribute website dns and certificate
-
-...or alternatively:
+- add aws main profile in `.variables`
 - `./aws-user.sh on`
 - in aws IAM create keys for the user just created 
 - create aws user profile:
