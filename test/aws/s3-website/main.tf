@@ -1,17 +1,14 @@
 terraform {
   backend "s3" {
-    bucket = "terraform-state-jettevisti"
+    bucket = "terraform-state-tgedr-tf-modules-test"
+    dynamodb_table = "terraform-state-lock-tgedr-tf-modules-test"
     key    = "s3-website"
-    region = "eu-north-1"
+    region = "us-east-1"
   }
 }
 
-provider "aws" {
-  region = var.region
-}
-
 variable "region" {
-  type      = string
+  type    = string
 }
 
 variable "bucket_name" {
@@ -20,6 +17,10 @@ variable "bucket_name" {
 
 variable "index_html" {
   type        = string
+}
+
+provider "aws" {
+  region  = var.region
 }
 
 module "s3_website" {

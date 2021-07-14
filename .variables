@@ -1,0 +1,2 @@
+export AWS_MAIN_PROFILE=tgedr_main
+export AWS_USER_PROFILE=tgedr

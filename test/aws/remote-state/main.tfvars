@@ -1,2 +1,2 @@
-region = "eu-north-1"
-solution = "s3website"
+solution = "tgedr-tf-modules-test"
+region = "us-east-1"

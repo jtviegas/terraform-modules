@@ -1,12 +1,13 @@
-variable "region" {
-  type      = string
-}
 variable "group_name" {
   type      = string
 }
 
+variable "region" {
+  type    = string
+}
+
 provider "aws" {
-  region = var.region
+  region  = var.region
 }
 
 module "ops_group" {

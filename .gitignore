@@ -11,6 +11,7 @@ terraform.tfstate.backup
 terraform.tfstate
 .idea
 *.secret
+*.secrets
 secrets.inc
 helloworld.zip
 bashutils.inc

@@ -1,4 +1,4 @@
-region = "eu-north-1"
 user_public_key = "keybase:jtviegas"
-group_name = "devops"
+group_name = "tgedr-tf-modules-test"
 user_name = "root"
+region = "us-east-1"

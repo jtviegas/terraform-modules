@@ -1,3 +1,3 @@
 bucket_name = "tgedr-tf-modules-test"
-index_html = "index.html"
+domain_name = "tgedr.com"
 region = "us-east-1"

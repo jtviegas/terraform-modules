@@ -39,9 +39,14 @@ err(){
     echo " [ERR]   `date` !!! $__msg "
 }
 
-if [ -f "$parent_folder/include.secret" ]; then
-    debug "we have an 'include.secret' file"
-    . "$parent_folder/include.secret"
+if [ -f "${this_folder}/.variables" ]; then
+    debug "we have an '.variables' file"
+    . "${this_folder}/.variables"
+fi
+
+if [ -f "${this_folder}/.secrets" ]; then
+    debug "we have an '.secrets' file"
+    . "${this_folder}/.secrets"
 fi
 
 usage()
@@ -71,7 +76,7 @@ testOn()
   fetchModules
   terraform init
   terraform plan -var-file="main.tfvars"
-  terraform apply -auto-approve -lock=true -lock-timeout=10m -var-file="main.tfvars"
+  terraform apply -auto-approve -lock=true -lock-timeout=5m -var-file="main.tfvars"
   terraform output
   rm -rf "modules"
   cd "$_pwd"
@@ -84,12 +89,28 @@ testOff()
   cd "$test_dir"
   fetchModules
   terraform init
-  terraform destroy -auto-approve -lock=true -lock-timeout=10m -var-file="main.tfvars"
+  terraform destroy -lock=true -lock-timeout=5m -auto-approve -var-file="main.tfvars"
   rm -rf "modules"
   cd "$_pwd"
   info "[testOff|out]"
 }
 
+config_provider()
+{
+  info "[config_provider|in] ($1, $2)"
+  provider="$1"
+  module="$2"
+  if [ "$provider" == "aws" ];then
+    if [ "$module" == "ops-group" ] ||  [ "$module" == "ops-user" ] ; then
+      export AWS_PROFILE=$AWS_MAIN_PROFILE
+    else
+      export AWS_PROFILE=$AWS_USER_PROFILE
+    fi
+    info "...this the configuration being used for aws:"
+    aws configure list
+  fi
+  info "[config_provider|out]"
+}
 
 [ -z "$2" ] && { usage; }
 
@@ -100,6 +121,10 @@ if [ ! -d "$test_dir" ]; then
   err "not a test folder: $test_dir"
   exit 1
 fi
+
+module_name=$(echo $module_dir | cut -f2 -d/)
+module_provider=$(echo $module_dir | cut -f1 -d/)
+config_provider "$module_provider" "$module_name"
 
 info "starting [ $0 $1 $2 ] ..."
 _pwd=$(pwd)

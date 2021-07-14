@@ -1,8 +1,8 @@
-variable "region" {
+variable "solution" {
   type    = string
 }
 
-variable "solution" {
+variable "region" {
   type    = string
 }
 
