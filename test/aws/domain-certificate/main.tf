@@ -7,8 +7,12 @@ terraform {
   }
 }
 
-variable "domain_name" {
+variable "domain" {
   type    = string
+}
+
+variable "sub_domains" {
+  type    = set(string)
 }
 
 variable "region" {
@@ -22,7 +26,8 @@ provider "aws" {
 
 module "domain_certificate" {
   source = "./modules/aws/domain-certificate"
-  domain_name = var.domain_name
+  domain = var.domain
+  sub_domains = var.sub_domains
 }
 
 output "id" {
@@ -32,3 +37,4 @@ output "id" {
 output "arn" {
   value       = module.domain_certificate.arn
 }
+

@@ -35,28 +35,39 @@ example:
     - remote-state
     - SPA's index.html
   - provides: SPA deployment in an s3 bucket
+- subdomain
+  - subdomain entry under a predefined domain zone
+  - requires: domain name zone created in route53
+  - provides: a subdomain that can later be linked to a certificate and a bucket website, for instance
 - domain-certificate
-  - certificate to use with an existing route53 domain name
-  - requires: domain name created in route53
-  - provides: a certificate to use with domain name
-- website-dns-and-certificate-distribution
-  - link dns record to certificate and bucket website
+  - certificate to use with an existing route53 domain name and related sub-domains
+  - requires: domain name and sub domain zones created in route53
+  - provides: a certificate to use with domain and subdomains
+- web-distribution
+  - link dns records(domains or subdomains), certificates and bucket websites
   - requires:
-    - domain name created in route53
-    - domain certificate
+    - domain or subdomain created in route53
+    - domain or subdomain certificate
     - s3 bucket website
-  - provides: access to website with ssh and dns domain
-  
+  - provides: web presence with https
 
 
-#### suggested usage
+#### suggested usage - with `./test.sh` using test folders (note: requires an existing domain in route53)
 
-- add aws main profile in `.variables`
-- `./aws-user.sh on`
-- in aws IAM create keys for the user just created 
+- add aws main profile in `.variables` (manual step)
+- create `IAM` _group_ and _user_ to manage resources in aws:
+  - `./test.sh aws/ops-group on`
+  - `./test.sh aws/ops-user on`
+- in aws IAM create keys for the user just created (manual step)
 - create aws user profile:
   - ex: `aws configure --profile tgedr`
-  - ...and add it to `.variables`
-- `./aws-stack.sh on`
+  - ...and add it to `.variables` (manual step)
+- `./test.sh aws/remote-state on` - creates the bucket to save terraform remote state and the dynamoDb table to hold the lock
+- `./test.sh aws/3-apps-deployment on` - deploys a solution comprising the creation of:
+  - 2 subdomains additionally to the required domain
+  - ssl certificates for the domain and subdomains
+  - 3 SPA index.html's in a bucket each, configured as websites
+  - distribution and linking of the 3 SPA's with domain and subdomains and its certificates through _cloudfront_
+- in the end we should see  all 3 websites navigating to the domain and subdomains using a browser
 
 

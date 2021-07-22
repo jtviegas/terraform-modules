@@ -17,7 +17,7 @@ data "aws_route53_zone" "domain_zone" {
 }
 
 data "aws_acm_certificate" "domain_certificate" {
-  domain   = var.domain_name
+  domain   = var.certificate_domain_name
 }
 
 resource "aws_cloudfront_origin_access_identity" "cloudfront_origin_access_id" {

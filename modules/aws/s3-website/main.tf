@@ -25,7 +25,7 @@ resource "aws_s3_bucket_object" "website_content" {
   acl    = "public-read"
   content_type = "text/html"
   storage_class = "STANDARD"
-  etag = filemd5("index.html")
+  etag = filemd5(var.index_html)
   force_destroy = true
 }
 
