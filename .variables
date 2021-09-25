@@ -1,2 +1,6 @@
 export AWS_MAIN_PROFILE=tgedr_main
 export AWS_USER_PROFILE=tgedr
+export ARM_SUBSCRIPTION_ID=6175f3e6-4d8c-4157-a15c-0a45e7e98580
+export ARM_TENANT_ID=d69819b1-740d-435a-8ff4-c41cdb1df926
+export ARM_USER=tmp.tgedr@gmail.com
+export ARM_CLIENT_ID=6ff7c808-73a7-48f0-8cdf-a1be8241f545

@@ -51,6 +51,13 @@ example:
     - s3 bucket website
   - provides: web presence with https
 
+### azure
+
+- base
+  - resource group and remote state
+  - requires: nothing
+  - provides: remote state in storage account and an overarching resource group
+
 
 #### suggested usage - with `./test.sh` using test folders (note: requires an existing domain in route53)
 

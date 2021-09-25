@@ -19,33 +19,15 @@ MODULES_DIR="${this_folder}/modules"
 MODE=LOCAL # LOCAL or REMOTE
 # -------------------------------
 
-debug(){
-    local __msg="$@"
-    echo " [DEBUG] `date` ... $__msg "
-}
-
-info(){
-    local __msg="$@"
-    echo " [INFO]  `date` ->>> $__msg "
-}
-
-warn(){
-    local __msg="$@"
-    echo " [WARN]  `date` *** $__msg "
-}
-
-err(){
-    local __msg="$@"
-    echo " [ERR]   `date` !!! $__msg "
-}
+. "${this_folder}/scripts/include.sh"
 
 if [ -f "${this_folder}/.variables" ]; then
-    debug "we have an '.variables' file"
+    debug "we have a '.variables' file"
     . "${this_folder}/.variables"
 fi
 
 if [ -f "${this_folder}/.secrets" ]; then
-    debug "we have an '.secrets' file"
+    debug "we have a '.secrets' file"
     . "${this_folder}/.secrets"
 fi
 
