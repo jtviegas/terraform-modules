@@ -7,16 +7,14 @@ terraform {
   }
 }
 
-resource "azurerm_resource_group" "base_rg" {
-  name     = "${var.project}_${var.solution}_${var.env}"
-  location = var.location
+data "azurerm_resource_group" "base_rg" {
+  name = "${var.project}0${var.solution}0${var.env}"
 }
 
-# ARM_ACCESS_KEY
-resource "azurerm_storage_account" "base" {
-  name                     = "${var.project}0${var.solution}0base"
-  resource_group_name      = azurerm_resource_group.base_rg.name
-  location                 = azurerm_resource_group.base_rg.location
+resource "azurerm_storage_account" "storage" {
+  name                     = "${var.project}0${var.solution}0${var.env}0storage"
+  resource_group_name      = data.azurerm_resource_group.base_rg.name
+  location                 = data.azurerm_resource_group.base_rg.location
   account_tier             = "Standard"
   account_replication_type = "LRS"
 
@@ -27,8 +25,8 @@ resource "azurerm_storage_account" "base" {
   }
 }
 
-resource "azurerm_storage_container" "state" {
-  name                  = "terraform-state"
-  storage_account_name  = azurerm_storage_account.base.name
+resource "azurerm_storage_container" "datalake" {
+  name                  = "datalake"
+  storage_account_name  = azurerm_storage_account.storage.name
 }
 

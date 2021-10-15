@@ -1,9 +1,9 @@
 terraform {
-  required_providers {
-    azurerm = {
-      source  = "hashicorp/azurerm"
-      version = "=2.46.0"
-    }
+  backend "azurerm" {
+    resource_group_name  = "tgedr0test0dev"
+    storage_account_name = "tgedr0test0dev0base"
+    container_name       = "terraform-state"
+    key                  = "storage"
   }
 }
 
@@ -11,35 +11,35 @@ provider "azurerm" {
   features {}
 }
 
+variable "project" {
+  type    = string
+}
+
 variable "solution" {
   type    = string
 }
 
-variable "region" {
+variable "env" {
   type    = string
 }
 
-provider "aws" {
-  region  = var.region
-}
 
-module "remote_state" {
-  source = "./modules/aws/remote-state"
+module "storage" {
+  source = "./modules/azure/storage"
+  project = var.project
   solution = var.solution
+  env = var.env
 }
 
-output "lock_state_table_arn" {
-  value = module.remote_state.table_arn
+output "storage_account_id" {
+  value = module.storage.storage_account_id
 }
 
-output "lock_state_table_id" {
-  value = module.remote_state.table_id
+output "storage_account_access_key" {
+  value = module.storage.storage_account_access_key
 }
 
-output "tf_state_bucket_arn" {
-  value = module.remote_state.bucket_arn
+output "storage_container_id" {
+  value = module.storage.storage_container_id
 }
 
-output "tf_state_bucket_id" {
-  value = module.remote_state.bucket_id
-}

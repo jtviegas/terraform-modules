@@ -1,3 +1,3 @@
 project = "tgedr"
-solution = "tftest"
+solution = "test"
 env = "dev"
