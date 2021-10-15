@@ -14,3 +14,5 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         REPO_OWNER: jtviegas
+        WITH_V: true
+        source: ${{ GITHUB_WORKSPACE }}/modules
