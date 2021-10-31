@@ -28,7 +28,7 @@ resource "azurerm_storage_account" "base" {
 }
 
 resource "azurerm_storage_container" "state" {
-  name                  = "terraform-state"
+  name                  = "terraform-remote-state"
   storage_account_name  = azurerm_storage_account.base.name
 }
 
