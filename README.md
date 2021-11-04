@@ -3,23 +3,27 @@ handy terraform modules
 
 ## pre-requirements
 
-- [create a service principal and its access token](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/guides/service_principal_client_secret)
-- [associate a service principal to AD permissions](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/guides/service_principal_configuration#azure-active-directory-permissions)
+### aws
+- TODO
 - export variables to environment, use the `.variables` file (version managed):
   - AWS_MAIN_PROFILE
   - AWS_USER_PROFILE
+- export secret variables to environment using `.secrets` file (not version managed, you'll have to create it in your folder):
+  - TODO
+- login with key:
+  - TODO
+### azure
+- [create a service principal and its access token](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/guides/service_principal_client_secret)
+- [associate a service principal to AD permissions](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/guides/service_principal_configuration#azure-active-directory-permissions)
+- export variables to environment, use the `.variables` file (version managed):
   - ARM_SUBSCRIPTION_ID
   - ARM_TENANT_ID
   - ARM_USER
   - ARM_CLIENT_ID
 - export secret variables to environment using `.secrets` file (not version managed, you'll have to create it in your folder):
   - ARM_CLIENT_SECRET
-  - AWS_*
 - login with service principal:
-  - azure
-    - `./scripts/helper.sh az_sp login `
-  - aws
-    - TODO
+  - `./scripts/helper.sh az_sp login `
 
 ## usage
 - `test` folder contains examples on how to use modules
