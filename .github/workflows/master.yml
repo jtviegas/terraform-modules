@@ -7,7 +7,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: '0'
     # https://github.com/marketplace/actions/github-tag-bump
     - name: Bump version and push tag
       uses: anothrNick/github-tag-action@master
