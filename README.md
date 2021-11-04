@@ -5,11 +5,11 @@ handy terraform modules
 
 ### system
 - bash shell
+- aws account / azure account
 - package installations:
   - terraform 
   - svn
-  - aws cli
-  - azure cli
+  - aws cli / azure cli
 
 ### aws
 - TODO
