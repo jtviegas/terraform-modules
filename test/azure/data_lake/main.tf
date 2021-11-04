@@ -7,11 +7,9 @@ terraform {
   }
 }
 
-
-
-#provider "azuread" {
-#  tenant_id = "d69819b1-740d-435a-8ff4-c41cdb1df926",
-#}
+provider "azurerm" {
+  features {}
+}
 
 variable "location" {
   type        = string
@@ -34,12 +32,17 @@ variable "data_lake_store_suffix" {
   type        = string
 }
 
+variable "data_lake_paths" {
+  type    = set(string)
+}
+
 module "data_lake" {
   source = "./modules/azure/data_lake"
   project = var.project
   solution = var.solution
   env = var.env
   data_lake_store_suffix = var.data_lake_store_suffix
+  data_lake_paths = var.data_lake_paths
 }
 
 output "data_lake_store_id" {
