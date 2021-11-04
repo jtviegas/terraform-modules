@@ -2,7 +2,7 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "=2.74.0"
+      version = "=2.83.0"
     }
   }
 }
@@ -18,7 +18,7 @@ resource "azurerm_storage_account" "data_lake" {
   account_tier             = "Standard"
   account_replication_type = "LRS"
   account_kind             = "StorageV2"
-  is_hns_enabled = true
+  is_hns_enabled           = true
 
   tags = {
     env = var.env
@@ -30,12 +30,6 @@ resource "azurerm_storage_account" "data_lake" {
 resource "azurerm_storage_data_lake_gen2_filesystem" "data_lake_fs" {
   name               = var.data_lake_fs_name
   storage_account_id = azurerm_storage_account.data_lake.id
-
-  properties = {
-    env = var.env
-    project = var.project
-    solution = var.solution
-  }
 }
 
 resource "azurerm_storage_data_lake_gen2_path" "data_lake_paths" {

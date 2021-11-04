@@ -32,6 +32,10 @@ variable "data_lake_store_suffix" {
   type        = string
 }
 
+variable "data_lake_fs_name" {
+  type        = string
+}
+
 variable "data_lake_paths" {
   type    = set(string)
 }
@@ -42,6 +46,7 @@ module "data_lake" {
   solution = var.solution
   env = var.env
   data_lake_store_suffix = var.data_lake_store_suffix
+  data_lake_fs_name = var.data_lake_fs_name
   data_lake_paths = var.data_lake_paths
 }
 
