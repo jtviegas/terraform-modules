@@ -3,6 +3,14 @@ handy terraform modules
 
 ## pre-requirements
 
+### system
+- bash shell
+- package installations:
+  - terraform 
+  - svn
+  - aws cli
+  - azure cli
+
 ### aws
 - TODO
 - export variables to environment, use the `.variables` file (version managed):
