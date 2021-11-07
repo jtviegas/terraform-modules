@@ -1,7 +1,11 @@
 # terraform-modules
 handy terraform modules
 
-## how to use
+## toc
+  1. setup
+  2. use the modules
+  3. existent modules
+  4. development
 
 ### 1. setup 
 #### 1.1. download helper script
@@ -164,6 +168,7 @@ root@842b3e423955:~# ./helper.sh az check
 ```
 
 ##### 1.4.2. aws
+TODO
 
 ### 2. use the modules
 - have a look into `test` folder, it contains examples on how to use modules
