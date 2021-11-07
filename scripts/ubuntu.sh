@@ -57,6 +57,11 @@ fi
 system_requirements(){
   info "[system_requirements] ..."
 
+  which terraform 1>/dev/null
+  if [ ! "$?" -eq "0" ] ; then
+
+  fi
+
   apt-get update && apt-get install -y gnupg software-properties-common curl
   curl -fsSL https://apt.releases.hashicorp.com/gpg | apt-key add -
   apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
@@ -99,8 +104,8 @@ usage()
 {
   cat <<EOM
   usages:
-  $(basename $0) sys {requirements}
-                          requirements   install required packages
+  $(basename $0) sys {reqs}
+                          reqs   install required packages
 
   $(basename $0) az {login|check}
                           login   logs in using the service principal credentials defined in environment
@@ -130,11 +135,8 @@ case "$1" in
         ;;
       sys)
         case "$2" in
-              login)
-                az_login
-                ;;
-              check)
-                az_login_check
+              reqs)
+                system_requirements
                 ;;
               *)
                 usage
