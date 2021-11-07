@@ -33,18 +33,20 @@ err(){
     echo " [ERR]   `date` !!! $__msg "
 }
 
-if [ -f "${parent_folder}/.variables" ]; then
+if [ -f "${this_folder}/.variables" ]; then
     debug "we have a '.variables' file"
-    . "${parent_folder}/.variables"
+    . "${this_folder}/.variables"
 else
-    err "can't find '.variables' file"
+    warn "creating '.variables' file"
+    touch "${this_folder}/.variables"
 fi
 
-if [ -f "${parent_folder}/.secrets" ]; then
+if [ -f "${this_folder}/.secrets" ]; then
     debug "we have a '.secrets' file"
-    . "${parent_folder}/.secrets"
+    . "${this_folder}/.secrets"
 else
-    err "can't find '.secrets' file (note: where keys/passwords should be stored => without being pushed to git)"
+    warn "creating '.secrets' file"
+    touch "${this_folder}/.secrets"
 fi
 
 
