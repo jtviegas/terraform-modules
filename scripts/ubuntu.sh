@@ -54,21 +54,20 @@ fi
 #git clone https://github.com/jtviegas/terraform-modules.git
 
 
-system_requirements(){
-  info "[system_requirements] ..."
+sys_reqs(){
+  info "[sys_reqs] ..."
 
   which terraform 1>/dev/null
   if [ ! "$?" -eq "0" ] ; then
-
+    info "[sys_reqs] installing terraform"
+    apt-get update && apt-get install -y gnupg software-properties-common curl
+    curl -fsSL https://apt.releases.hashicorp.com/gpg | apt-key add -
+    apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+    apt-get update
+    apt-get -y install git terraform
   fi
 
-  apt-get update && apt-get install -y gnupg software-properties-common curl
-  curl -fsSL https://apt.releases.hashicorp.com/gpg | apt-key add -
-  apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
-  apt-get update
-  apt-get -y install git terraform
-
-  info "[system_requirements] ...done."
+  info "[sys_reqs] ...done."
 }
 
 check_env_vars(){
@@ -136,7 +135,7 @@ case "$1" in
       sys)
         case "$2" in
               reqs)
-                system_requirements
+                sys_reqs
                 ;;
               *)
                 usage
