@@ -1,7 +1,19 @@
 # terraform-modules
 handy terraform modules
 
-## pre-requirements
+## how to use
+
+### 1. download helper script
+download the appropriate script for your system, you can 
+find the various scripts in the scripts folder.
+
+...if you are on Ubuntu, invoke:
+```
+wget -O helper.sh https://raw.githubusercontent.com/jtviegas/terraform-modules/master/scripts/ubuntu.sh && chmod +x helper.sh
+```
+
+### 2. install requirements
+
 
 ### system
 - bash shell
