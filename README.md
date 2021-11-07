@@ -8,6 +8,8 @@ handy terraform modules
   4. development
 
 ### 1. setup 
+You might want to test the modules in a container, before anything else, 
+if so load an Ubuntu image: `docker run -ti --entrypoint /bin/bash ubuntu`
 #### 1.1. download helper script
 download the appropriate script for your system, you can find the various scripts in the scripts folder.
 
