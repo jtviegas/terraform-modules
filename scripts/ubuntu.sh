@@ -77,7 +77,7 @@ az_reqs(){
 
   which az 1>/dev/null
   if [ ! "$?" -eq "0" ] ; then
-    info "[sys_reqs] installing azure-cli"
+    info "[az_reqs] installing azure-cli"
     apt-get update
     apt-get install ca-certificates curl apt-transport-https lsb-release gnupg
     curl -sL https://packages.microsoft.com/keys/microsoft.asc |
@@ -89,7 +89,7 @@ az_reqs(){
     apt-get update
     apt-get install azure-cli
   else
-    info "[sys_reqs] azure-cli is already installed"
+    info "[az_reqs] azure-cli is already installed"
   fi
 
   info "[az_reqs] ...done."
@@ -128,17 +128,18 @@ usage()
 {
   cat <<EOM
   usages:
-  $(basename $0) sys {reqs}
-                system features:
+    system features:
+    $(basename $0) sys {reqs}
                           reqs   install required packages
 
-  $(basename $0) az {login|check|reqs}
-                azure platform features:
+    azure platform features:
+    $(basename $0) az {login|check|reqs}
                           reqs    installs azure related dependencies
                           login   logs in using the service principal credentials defined in environment
                                     (check '.variables' and '.secrets' files)
                           check   checks if logged in correctly listing VM's sizes
-                aws platform features:
+    aws platform features:
+    $(basename $0) aws {login|check|reqs}
                           reqs    installs aws related dependencies
 EOM
   exit 1
