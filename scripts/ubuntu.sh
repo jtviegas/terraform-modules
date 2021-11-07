@@ -53,6 +53,17 @@ fi
 
 #git clone https://github.com/jtviegas/terraform-modules.git
 
+check_env_vars(){
+  info "[check_env_vars] ..."
+  for arg in "$@"
+  do
+      debug "[check_env_vars] ... checking $arg"
+      which "$arg" 1>/dev/null
+      env | grep $arg
+      if [ ! "$?" -eq "0" ] ; then err "[check_env_vars] please define env var $arg" && return 1; fi
+  done
+  info "[check_env_vars] ...done."
+}
 
 sys_reqs(){
   info "[sys_reqs] ..."
@@ -95,18 +106,15 @@ az_reqs(){
   info "[az_reqs] ...done."
 }
 
-check_env_vars(){
-  info "[check_env_vars] ..."
-  for arg in "$@"
-  do
-      debug "[check_env_vars] ... checking $arg"
-      which "$arg" 1>/dev/null
-      env | grep $arg
-      if [ ! "$?" -eq "0" ] ; then err "[check_env_vars] please define env var $arg" && return 1; fi
-  done
-  info "[check_env_vars] ...done."
-}
 
+az_create_sp()
+{
+  info "[az_create_sp|in]"
+  az ad sp create-for-rbac --role="Contributor" --scopes="/subscriptions/${ARM_SUBSCRIPTION_ID}" -o table
+  info "[az_create_sp] please add the following output to '.secrets' file:     password(ARM_CLIENT_SECRET) "
+  info "[az_create_sp] please add the following output to '.variables' file:   app_id(ARM_CLIENT_ID), tenant(ARM_TENANT_ID)"
+  info "[az_create_sp|out]"
+}
 
 az_login_check()
 {
@@ -130,17 +138,18 @@ usage()
   usages:
     system features:
     $(basename $0) sys {reqs}
-                          reqs   install required packages
+                          reqs        install required packages
 
     azure platform features:
-    $(basename $0) az {login|check|reqs}
-                          reqs    installs azure related dependencies
-                          login   logs in using the service principal credentials defined in environment
-                                    (check '.variables' and '.secrets' files)
-                          check   checks if logged in correctly listing VM's sizes
+    $(basename $0) az {login|check|reqs|create_sp}
+                          reqs        installs azure related dependencies
+                          login       logs in using the service principal credentials defined in environment
+                                        (check '.variables' and '.secrets' files)
+                          check       checks if logged in correctly listing VM's sizes
+                          create_sp   create a service principal with contributor role
     aws platform features:
     $(basename $0) aws {login|check|reqs}
-                          reqs    installs aws related dependencies
+                          reqs        installs aws related dependencies
 EOM
   exit 1
 }
@@ -160,6 +169,9 @@ case "$1" in
                 ;;
               check)
                 az_login_check
+                ;;
+              create_sp)
+                az_create_sp
                 ;;
               *)
                 usage

@@ -7,12 +7,12 @@ handy terraform modules
 download the appropriate script for your system, you can 
 find the various scripts in the scripts folder.
 
-...if you are on Ubuntu, invoke:
+...if you are on Ubuntu, run:
 ```
-wget -O helper.sh https://raw.githubusercontent.com/jtviegas/terraform-modules/master/scripts/ubuntu.sh && chmod +x helper.sh
+wget -O helper.sh --no-check-certificate https://raw.githubusercontent.com/jtviegas/terraform-modules/master/scripts/ubuntu.sh && chmod +x helper.sh
 ```
 
-...if you run the script you'll get the available features:
+...if you run the script you'll get the available features: `./helper.sh`
 ```
 root@842b3e423955:~# ./helper.sh
  [DEBUG] Sun Nov  7 18:25:42 CET 2021 ... we have a '.variables' file
@@ -30,7 +30,7 @@ root@842b3e423955:~# ./helper.sh
 
 ### 2. install system requirements
 
-run:
+run: `./helper.sh sys reqs`
 ```
 root@842b3e423955:~# ./helper.sh sys reqs
  [DEBUG] Sun Nov  7 18:28:16 CET 2021 ... we have a '.variables' file
@@ -45,7 +45,7 @@ root@842b3e423955:~# ./helper.sh sys reqs
 ### 3. install platform requirements
 
 #### 3.1 azure
-run:
+run: `./helper.sh az reqs`
 ```
 root@842b3e423955:~# ./helper.sh az reqs
  [DEBUG] Sun Nov  7 18:40:12 CET 2021 ... we have a '.variables' file
@@ -55,13 +55,101 @@ root@842b3e423955:~# ./helper.sh az reqs
  [INFO]  Sun Nov  7 18:40:12 CET 2021 ->>> [az_reqs] installing azure-cli
 Get:1 http://security.ubuntu.com/ubuntu focal-security InRelease [114 kB]
 ...
-
+Unpacking azure-cli (2.30.0-1~focal) ...
+Setting up azure-cli (2.30.0-1~focal) ...
+ [INFO]  Sun Nov  7 18:49:33 CET 2021 ->>> [az_reqs] ...done.
+ [INFO]  Sun Nov  7 18:49:33 CET 2021 ->>> ...[ ./helper.sh az reqs ] done.
 ```
 
 #### 3.2 aws
 
+### 4. connect to platform
+#### 4.1 azure
+- login to azure with your main account: `az login`
+```
+root@842b3e423955:~# az login
+To sign in, use a web browser to open the page https://microsoft.com/devicelogin and enter the code DY8JUMNJ9 to authenticate.
+[
+  {
+    "cloudName": "AzureCloud",
+    "homeTenantId": "d69819b1-740d-435a-8ff4-c41cdb1df926",
+    "id": "6175f3e6-4d8c-4157-a15c-0a45e7e98580",
+    "isDefault": true,
+    "managedByTenants": [],
+    "name": "tgedr",
+    "state": "Enabled",
+    "tenantId": "d69819b1-740d-435a-8ff4-c41cdb1df926",
+    "user": {
+      "name": "tmp.tgedr@gmail.com",
+      "type": "user"
+    }
+  }
+]
+```
+- export the following environment variables accordingly to your azure account:
+  - in `.variables`:
+    - ARM_SUBSCRIPTION_ID
+- create a service principal, run: `./helper az create_sp`
+- 
+- [using your azure account create a service principal and it's access key](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/guides/service_principal_client_secret)
+- export the following environment variables accordingly:
+  - in `.variables`:
+    - ARM_CLIENT_ID
+    - ARM_TENANT_ID
+  - in `.secrets`:
+    - ARM_CLIENT_SECRET
+- test azure login, run: `./`
+```
+root@842b3e423955:~# ./helper.sh az login
+ [DEBUG] Sun Nov  7 18:59:43 CET 2021 ... we have a '.variables' file
+ [DEBUG] Sun Nov  7 18:59:43 CET 2021 ... we have a '.secrets' file
+ [INFO]  Sun Nov  7 18:59:43 CET 2021 ->>> starting [ ./helper.sh az login ] ...
+ [INFO]  Sun Nov  7 18:59:43 CET 2021 ->>> [az_login|in]
+ [INFO]  Sun Nov  7 18:59:43 CET 2021 ->>> [check_env_vars] ...
+ ...
+ [INFO]  Sun Nov  7 18:59:43 CET 2021 ->>> [check_env_vars] ...done.
+[
+  {
+    "cloudName": "AzureCloud",
+    "homeTenantId": "d69819b1-740d-435a-8ff4-c41cdb1df926",
+    "id": "6175f3e6-4d8c-4157-a15c-0a45e7e98580",
+    "isDefault": true,
+    "managedByTenants": [],
+    "name": "tgedr",
+    "state": "Enabled",
+    "tenantId": "d69819b1-740d-435a-8ff4-c41cdb1df926",
+    "user": {
+      "name": "6ff7c808-73a7-48f0-8cdf-a1be8241f545",
+      "type": "servicePrincipal"
+    }
+  }
+]
+ [INFO]  Sun Nov  7 18:59:52 CET 2021 ->>> [az_login|out]
+ [INFO]  Sun Nov  7 18:59:52 CET 2021 ->>> ...[ ./helper.sh az login ] done.
+```
+- verify azure account access, run: `./helper.sh az check`
+```
+root@842b3e423955:~# ./helper.sh az check
+ [DEBUG] Sun Nov  7 19:03:20 CET 2021 ... we have a '.variables' file
+ [DEBUG] Sun Nov  7 19:03:20 CET 2021 ... we have a '.secrets' file
+ [INFO]  Sun Nov  7 19:03:20 CET 2021 ->>> starting [ ./helper.sh az check ] ...
+ [INFO]  Sun Nov  7 19:03:20 CET 2021 ->>> [az_login_check|in]
+ ...
+    {
+      "maxDataDiskCount": 64,
+      "memoryInMb": 688128,
+      "name": "Standard_E104i_v5",
+      "numberOfCores": 104,
+      "osDiskSizeInMb": 1047552,
+      "resourceDiskSizeInMb": 0
+    }
+  ]
+ [INFO]  Sun Nov  7 19:04:09 CET 2021 ->>> [az_login_check|out]
+ [INFO]  Sun Nov  7 19:04:09 CET 2021 ->>> ...[ ./helper.sh az check ] done.
+```
 
-
+### 4. connect to platform
+#### 4.2 aws
 
 ### system
 - bash shell
