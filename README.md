@@ -45,7 +45,18 @@ root@842b3e423955:~# ./helper.sh sys reqs
 ### 3. install platform requirements
 
 #### 3.1 azure
+run:
+```
+root@842b3e423955:~# ./helper.sh az reqs
+ [DEBUG] Sun Nov  7 18:40:12 CET 2021 ... we have a '.variables' file
+ [DEBUG] Sun Nov  7 18:40:12 CET 2021 ... we have a '.secrets' file
+ [INFO]  Sun Nov  7 18:40:12 CET 2021 ->>> starting [ ./helper.sh az reqs ] ...
+ [INFO]  Sun Nov  7 18:40:12 CET 2021 ->>> [az_reqs] ...
+ [INFO]  Sun Nov  7 18:40:12 CET 2021 ->>> [az_reqs] installing azure-cli
+Get:1 http://security.ubuntu.com/ubuntu focal-security InRelease [114 kB]
+...
 
+```
 
 #### 3.2 aws
 
