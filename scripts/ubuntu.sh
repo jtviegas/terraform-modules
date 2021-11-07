@@ -159,6 +159,24 @@ fetch_modules()
   info "[fetch_modules|out]"
 }
 
+deploy()
+{
+  info "[testOn|in]"
+  terraform init
+  terraform plan -var-file="main.tfvars"
+  terraform apply -auto-approve -lock=true -lock-timeout=5m -var-file="main.tfvars"
+  terraform output
+  info "[testOn|out]"
+}
+
+undeploy()
+{
+  info "[testOff|in]"
+  terraform init
+  terraform destroy -lock=true -lock-timeout=5m -auto-approve -var-file="main.tfvars"
+  info "[testOff|out]"
+}
+
 usage()
 {
   cat <<EOM
@@ -178,8 +196,10 @@ usage()
     $(basename $0) aws {login|check|reqs}
                           reqs        installs aws related dependencies
     modules features:
-    $(basename $0) mod {fetch}
+    $(basename $0) mod {fetch|deploy|undeploy}
                           fetch       fetch terraform modules latest version
+                          deploy      deploy the infrastructure
+                          undeploy    undeploy the infrastructure
 EOM
   exit 1
 }
@@ -193,6 +213,12 @@ case "$1" in
         case "$2" in
               fetch)
                 fetch_modules
+                ;;
+              deploy)
+                deploy
+                ;;
+              undeploy)
+                undeploy
                 ;;
               *)
                 usage

@@ -166,7 +166,7 @@ root@842b3e423955:~# ./helper.sh az check
 ##### 1.4.2. aws
 
 ### 2. use the modules
-- `test` folder contains examples on how to use modules
+- have a look into `test` folder, it contains examples on how to use modules
 #### 2.1. azure example - create the base resources on which we can build after, a storage account to save remote terraform state 
 - create a terraform spec file to use the base module:
 ```
@@ -203,8 +203,19 @@ project = "tgedr"
 solution = "test"
 env = "dev"
 ```
-- fetch modules from latest release: run ``
-
+- fetch modules from latest release: run `./helper.sh mod fetch`
+```
+root@842b3e423955:~# ./helper.sh mod fetch
+ [DEBUG] Sun Nov  7 20:44:11 CET 2021 ... we have a '.variables' file
+ [DEBUG] Sun Nov  7 20:44:11 CET 2021 ... we have a '.secrets' file
+ [INFO]  Sun Nov  7 20:44:11 CET 2021 ->>> starting [ ./helper.sh mod fetch ] ...
+ ...
+ [INFO]  Sun Nov  7 20:44:13 CET 2021 ->>> [fetch_modules|out]
+ [INFO]  Sun Nov  7 20:44:13 CET 2021 ->>> ...[ ./helper.sh mod fetch ] done.
+root@842b3e423955:~# ls
+helper.sh  main.tf  main.tfvars  modules 
+```
+- 
 ### 3. develop more modules
 
 
