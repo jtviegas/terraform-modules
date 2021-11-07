@@ -3,16 +3,16 @@ handy terraform modules
 
 ## how to use
 
-### 1. download helper script
-download the appropriate script for your system, you can 
-find the various scripts in the scripts folder.
+### 1. setup 
+#### 1.1. download helper script
+download the appropriate script for your system, you can find the various scripts in the scripts folder.
 
 ...if you are on Ubuntu, run:
 ```
 wget -O helper.sh --no-check-certificate https://raw.githubusercontent.com/jtviegas/terraform-modules/master/scripts/ubuntu.sh && chmod +x helper.sh
 ```
 
-...if you run the script you'll get the available features: `./helper.sh`
+...if you run the script with no options, you'll get the available features: `./helper.sh`
 ```
 root@842b3e423955:~# ./helper.sh
  [DEBUG] Sun Nov  7 18:25:42 CET 2021 ... we have a '.variables' file
@@ -28,7 +28,7 @@ root@842b3e423955:~# ./helper.sh
                           check   checks if logged in correctly listing VM's sizes
 ```
 
-### 2. install system requirements
+#### 1.2. install system requirements
 
 run: `./helper.sh sys reqs`
 ```
@@ -42,9 +42,9 @@ root@842b3e423955:~# ./helper.sh sys reqs
  [INFO]  Sun Nov  7 18:28:16 CET 2021 ->>> ...[ ./helper.sh sys reqs ] done.
 ```
 
-### 3. install platform requirements
+#### 1.3. install platform requirements
 
-#### 3.1 azure
+##### 1.3.1. azure
 run: `./helper.sh az reqs`
 ```
 root@842b3e423955:~# ./helper.sh az reqs
@@ -61,10 +61,10 @@ Setting up azure-cli (2.30.0-1~focal) ...
  [INFO]  Sun Nov  7 18:49:33 CET 2021 ->>> ...[ ./helper.sh az reqs ] done.
 ```
 
-#### 3.2 aws
+##### 1.3.2. aws
 
-### 4. connect to platform
-#### 4.1 azure
+#### 1.4. connect to platform
+##### 1.4.1. azure
 - login to azure with your main account: `az login`
 ```
 root@842b3e423955:~# az login
@@ -90,15 +90,30 @@ To sign in, use a web browser to open the page https://microsoft.com/devicelogin
   - in `.variables`:
     - ARM_SUBSCRIPTION_ID
 - create a service principal, run: `./helper az create_sp`
-- 
-- [using your azure account create a service principal and it's access key](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/guides/service_principal_client_secret)
-- export the following environment variables accordingly:
+```
+root@842b3e423955:~# ./helper.sh az create_sp
+ [DEBUG] Sun Nov  7 19:19:33 CET 2021 ... we have a '.variables' file
+ [DEBUG] Sun Nov  7 19:19:33 CET 2021 ... we have a '.secrets' file
+ [INFO]  Sun Nov  7 19:19:33 CET 2021 ->>> starting [ ./helper.sh az create_sp ] ...
+ [INFO]  Sun Nov  7 19:19:33 CET 2021 ->>> [az_create_sp|in]
+Creating 'Contributor' role assignment under scope '/subscriptions/6175f3e6-4d8c-4157-a15c-0a45e7e98580'
+The output includes credentials that you must protect. Be sure that you do not include these credentials in your code or check the credentials into your source control. For more information, see https://aka.ms/azadsp-cli
+'name' property in the output is deprecated and will be removed in the future. Use 'appId' instead.
+AppId                                 DisplayName                    Name                                  Password                            Tenant
+------------------------------------  -----------------------------  ------------------------------------  ----------------------------------  ------------------------------------
+5c88b533-5949-4ea7-998d-d2757fc5162e  azure-cli-2021-11-07-18-19-35  5c88b533-5949-4ea7-998d-d2757fc5162e  ....                                d69819b1-740d-435a-8ff4-c41cdb1df926
+ [INFO]  Sun Nov  7 19:19:44 CET 2021 ->>> [az_create_sp] please add the following output to '.secrets' file:     password(ARM_CLIENT_SECRET)
+ [INFO]  Sun Nov  7 19:19:44 CET 2021 ->>> [az_create_sp] please add the following output to '.variables' file:   app_id(ARM_CLIENT_ID), tenant(ARM_TENANT_ID)
+ [INFO]  Sun Nov  7 19:19:44 CET 2021 ->>> [az_create_sp|out]
+ [INFO]  Sun Nov  7 19:19:44 CET 2021 ->>> ...[ ./helper.sh az create_sp ] done.
+```
+- export the following environment variables accordingly to the previous command output:
   - in `.variables`:
     - ARM_CLIENT_ID
     - ARM_TENANT_ID
   - in `.secrets`:
     - ARM_CLIENT_SECRET
-- test azure login, run: `./`
+- test azure login with the service principal, run: `./helper.sh az login`
 ```
 root@842b3e423955:~# ./helper.sh az login
  [DEBUG] Sun Nov  7 18:59:43 CET 2021 ... we have a '.variables' file
@@ -119,7 +134,7 @@ root@842b3e423955:~# ./helper.sh az login
     "state": "Enabled",
     "tenantId": "d69819b1-740d-435a-8ff4-c41cdb1df926",
     "user": {
-      "name": "6ff7c808-73a7-48f0-8cdf-a1be8241f545",
+      "name": "5c88b533-5949-4ea7-998d-d2757fc5162e",
       "type": "servicePrincipal"
     }
   }
@@ -148,40 +163,54 @@ root@842b3e423955:~# ./helper.sh az check
  [INFO]  Sun Nov  7 19:04:09 CET 2021 ->>> ...[ ./helper.sh az check ] done.
 ```
 
-### 4. connect to platform
-#### 4.2 aws
+##### 1.4.2. aws
 
-### system
-- bash shell
-- aws account / azure account
-- package installations:
-  - terraform 
-  - svn
-  - aws cli / azure cli
+### 2. use the modules
+- `test` folder contains examples on how to use modules
+#### 2.1. azure example - create the base resources on which we can build after, a storage account to save remote terraform state 
+- create a terraform spec file to use the base module:
+```
+root@842b3e423955:~# vi main.tf
+root@842b3e423955:~# cat main.tf
+provider "azurerm" {
+  features {}
+}
 
-### aws
-- TODO
-- export variables to environment, use the `.variables` file (version managed):
-  - AWS_MAIN_PROFILE
-  - AWS_USER_PROFILE
-- export secret variables to environment using `.secrets` file (not version managed, you'll have to create it in your folder):
-  - TODO
-- login with key:
-  - TODO
-### azure
-- [create a service principal and its access token](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/guides/service_principal_client_secret)
-- [associate a service principal to AD permissions](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/guides/service_principal_configuration#azure-active-directory-permissions)
-- export variables to environment, use the `.variables` file (version managed):
-  - ARM_SUBSCRIPTION_ID
-  - ARM_TENANT_ID
-  - ARM_USER
-  - ARM_CLIENT_ID
-- export secret variables to environment using `.secrets` file (not version managed, you'll have to create it in your folder):
-  - ARM_CLIENT_SECRET
-- login with service principal:
-  - `./scripts/helper.sh az_sp login `
+variable "project" {
+  type    = string
+}
 
-## usage
+variable "solution" {
+  type    = string
+}
+
+variable "env" {
+  type    = string
+}
+
+module "base" {
+  source = "./modules/azure/base"
+  project = var.project
+  solution = var.solution
+  env = var.env
+}
+```
+- create a terraform variables file to flesh out the variable values:
+```
+root@842b3e423955:~# vi main.tfvars
+root@842b3e423955:~# cat main.tfvars
+project = "tgedr"
+solution = "test"
+env = "dev"
+```
+- fetch modules from latest release: run ``
+
+### 3. develop more modules
+
+
+
+
+
 - `test` folder contains examples on how to use modules
 - try and test any module in the `test/*` folder using the `test.sh` script
 - you can copy and adapt this script, `test.sh`, into your projects, check its function `fetchModules` where you can define whether the modules are downloaded from the internet or loaded locally

@@ -68,6 +68,18 @@ check_env_vars(){
 sys_reqs(){
   info "[sys_reqs] ..."
 
+  which curl 1>/dev/null
+  if [ ! "$?" -eq "0" ] ; then
+    info "[sys_reqs] installing curl"
+    apt-get -y install curl
+  fi
+
+  which unzip 1>/dev/null
+  if [ ! "$?" -eq "0" ] ; then
+    info "[sys_reqs] installing unzip"
+    apt-get -y install unzip
+  fi
+
   which terraform 1>/dev/null
   if [ ! "$?" -eq "0" ] ; then
     info "[sys_reqs] installing terraform"
@@ -132,6 +144,21 @@ az_login()
   info "[az_login|out]"
 }
 
+fetch_modules()
+{
+  info "[fetch_modules|in] (MODE: $MODE)"
+  url=$(curl -s https://api.github.com/repos/jtviegas/terraform-modules/releases/latest \
+        | grep zipball_url \
+        | cut -d '"' -f 4)
+  info "[fetch_modules] latest release url is: $url"
+  wget -O modules.zip  --no-check-certificate "$url"
+  unzip modules.zip
+  release_folder=$(find . -name jtviegas-terraform-modules-*)
+  mv $release_folder/modules .
+  rm -r $release_folder
+  info "[fetch_modules|out]"
+}
+
 usage()
 {
   cat <<EOM
@@ -150,6 +177,9 @@ usage()
     aws platform features:
     $(basename $0) aws {login|check|reqs}
                           reqs        installs aws related dependencies
+    modules features:
+    $(basename $0) mod {fetch}
+                          fetch       fetch terraform modules latest version
 EOM
   exit 1
 }
@@ -159,6 +189,16 @@ info "starting [ $0 $1 $2 ] ..."
 _pwd=$(pwd)
 
 case "$1" in
+      mod)
+        case "$2" in
+              fetch)
+                fetch_modules
+                ;;
+              *)
+                usage
+                ;;
+        esac
+        ;;
       az)
         case "$2" in
               reqs)
