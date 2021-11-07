@@ -62,7 +62,7 @@ Setting up azure-cli (2.30.0-1~focal) ...
 ```
 
 ##### 1.3.2. aws
-
+TODO
 #### 1.4. connect to platform
 ##### 1.4.1. azure
 - login to azure with your main account: `az login`
@@ -199,7 +199,7 @@ module "base" {
 ```
 root@842b3e423955:~# vi main.tfvars
 root@842b3e423955:~# cat main.tfvars
-project = "tgedr"
+project = "theone"
 solution = "test"
 env = "dev"
 ```
@@ -215,49 +215,48 @@ root@842b3e423955:~# ./helper.sh mod fetch
 root@842b3e423955:~# ls
 helper.sh  main.tf  main.tfvars  modules 
 ```
-- 
-### 3. develop more modules
+- to deploy, run: `./helper.sh mod deploy`
+```
+root@842b3e423955:~# ./helper.sh mod deploy
+ [DEBUG] Sun Nov  7 20:55:23 CET 2021 ... we have a '.variables' file
+ [DEBUG] Sun Nov  7 20:55:23 CET 2021 ... we have a '.secrets' file
+ [INFO]  Sun Nov  7 20:55:23 CET 2021 ->>> starting [ ./helper.sh mod deploy ] ...
+ [INFO]  Sun Nov  7 20:55:23 CET 2021 ->>> [testOn|in]
+Initializing modules...
+...
+module.base.azurerm_storage_account.base: Creation complete after 24s [id=/subscriptions/6175f3e6-4d8c-4157-a15c-0a45e7e98580/resourceGroups/theone0test0dev/providers/Microsoft.Storage/storageAccounts/theone0test0dev0base]
+module.base.azurerm_storage_container.state: Creating...
+module.base.azurerm_storage_container.state: Creation complete after 0s [id=https://theone0test0dev0base.blob.core.windows.net/terraform-remote-state]
 
+Apply complete! Resources: 3 added, 0 changed, 0 destroyed.
+ [INFO]  Sun Nov  7 20:56:36 CET 2021 ->>> [testOn|out]
+ [INFO]  Sun Nov  7 20:56:36 CET 2021 ->>> ...[ ./helper.sh mod deploy ] done.
+```
+- you can check now in your azure subscription 3 new resources:
+  - resource group: `theone0test0dev`
+  - storage account: `theone0test0dev0base`
+  - storage container: `terraform-remote-state`
+- to undeploy, run: `./helper.sh mod undeploy`
+```
+root@842b3e423955:~# ./helper.sh mod undeploy
+ [DEBUG] Sun Nov  7 21:01:51 CET 2021 ... we have a '.variables' file
+ [DEBUG] Sun Nov  7 21:01:51 CET 2021 ... we have a '.secrets' file
+ [INFO]  Sun Nov  7 21:01:51 CET 2021 ->>> starting [ ./helper.sh mod undeploy ] ...
+ [INFO]  Sun Nov  7 21:01:51 CET 2021 ->>> [testOff|in]
+Initializing modules...
+...
+module.base.azurerm_resource_group.base_rg: Still destroying... [id=/subscriptions/6175f3e6-4d8c-4157-a15c-...7e98580/resourceGroups/theone0test0dev, 10s elapsed]
+module.base.azurerm_resource_group.base_rg: Destruction complete after 17s
 
+Destroy complete! Resources: 3 destroyed.
+ [INFO]  Sun Nov  7 21:02:49 CET 2021 ->>> [testOff|out]
+ [INFO]  Sun Nov  7 21:02:49 CET 2021 ->>> ...[ ./helper.sh mod undeploy ] done.
+```
 
-
-
-- `test` folder contains examples on how to use modules
-- try and test any module in the `test/*` folder using the `test.sh` script
-- you can copy and adapt this script, `test.sh`, into your projects, check its function `fetchModules` where you can define whether the modules are downloaded from the internet or loaded locally
-
-### aws
-- add aws main profile in `.variables` (manual step)
-- create `IAM` _group_ and _user_ to manage resources in aws:
-  - `./test.sh aws/ops-group on`
-  - `./test.sh aws/ops-user on`
-- in aws IAM create keys for the user just created (manual step)
-- create aws user profile:
-  - ex: `aws configure --profile tgedr`
-  - ...and add it to `.variables` (manual step)
-- `./test.sh aws/remote-state on` - creates the bucket to save terraform remote state and the dynamoDb table to hold the lock
-- `./test.sh aws/3-apps-deployment on` - deploys a solution comprising the creation of:
-  - 2 subdomains additionally to the required domain
-  - ssl certificates for the domain and subdomains
-  - 3 SPA index.html's in a bucket each, configured as websites
-  - distribution and linking of the 3 SPA's with domain and subdomains and its certificates through _cloudfront_
-- in the end we should see  all 3 websites navigating to the domain and subdomains using a browser
-- in the end to undeploy all:
-  - `./test.sh aws/3-apps-deployment off`
-  - `./test.sh aws/remote-state off`
-  - 
-### azure
-- deploy base infrastructure - terraform remote state persistence
-  - `./test.sh azure/base on`
-- deploy data lake storage with fs and 4 folder(bronze,silver,gold,tmp)
-  - `./test.sh azure/data_lake on`
-- undeploy
-  - `./test.sh azure/data_lake off`
-  - `./test.sh azure/base off`
-  
-## modules
-
-### aws
+#### 2.2. aws example
+TODO
+### 3. existent modules
+#### aws
 
 - ops-group
   - provides: operations group and role info, as an admin group, to add users afterwards
@@ -288,7 +287,7 @@ helper.sh  main.tf  main.tfvars  modules
     - domain or subdomain certificate
     - s3 bucket website
 
-### azure
+#### azure
 
 - base
   - resource group and remote state
@@ -306,6 +305,13 @@ helper.sh  main.tf  main.tfvars  modules
 - data_lake
   - provides: a data lake file system and a set of folders
   - requires: remote state and resource group
+
+### 4. development
+TODO
+
+
+
+
   
 
 
