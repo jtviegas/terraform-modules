@@ -12,7 +12,28 @@ find the various scripts in the scripts folder.
 wget -O helper.sh https://raw.githubusercontent.com/jtviegas/terraform-modules/master/scripts/ubuntu.sh && chmod +x helper.sh
 ```
 
+...if you run the script you'll get the available features:
+```
+root@842b3e423955:~# ./helper.sh
+ [DEBUG] Sun Nov  7 18:25:42 CET 2021 ... we have a '.variables' file
+ [DEBUG] Sun Nov  7 18:25:42 CET 2021 ... we have a '.secrets' file
+ [INFO]  Sun Nov  7 18:25:42 CET 2021 ->>> starting [ ./helper.sh   ] ...
+  usages:
+  helper.sh sys {reqs}
+                          reqs   install required packages
+
+  helper.sh az {login|check}
+                          login   logs in using the service principal credentials defined in environment
+                                    (check '.variables' and '.secrets' files)
+                          check   checks if logged in correctly listing VM's sizes
+```
+
 ### 2. install requirements
+
+run:
+```
+
+```
 
 
 ### system

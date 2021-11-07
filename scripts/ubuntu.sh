@@ -65,6 +65,8 @@ sys_reqs(){
     apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
     apt-get update
     apt-get -y install git terraform
+  else
+    info "[sys_reqs] terraform is already installed"
   fi
 
   info "[sys_reqs] ...done."
