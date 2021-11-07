@@ -155,7 +155,7 @@ fetch_modules()
   unzip modules.zip
   release_folder=$(find . -name jtviegas-terraform-modules-*)
   mv $release_folder/modules .
-  rm -r $release_folder modules.zip
+  rm -r $release_folder && rm modules.zip
   info "[fetch_modules|out]"
 }
 
