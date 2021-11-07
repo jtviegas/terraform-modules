@@ -28,12 +28,28 @@ root@842b3e423955:~# ./helper.sh
                           check   checks if logged in correctly listing VM's sizes
 ```
 
-### 2. install requirements
+### 2. install system requirements
 
 run:
 ```
-
+root@842b3e423955:~# ./helper.sh sys reqs
+ [DEBUG] Sun Nov  7 18:28:16 CET 2021 ... we have a '.variables' file
+ [DEBUG] Sun Nov  7 18:28:16 CET 2021 ... we have a '.secrets' file
+ [INFO]  Sun Nov  7 18:28:16 CET 2021 ->>> starting [ ./helper.sh sys reqs ] ...
+ [INFO]  Sun Nov  7 18:28:16 CET 2021 ->>> [sys_reqs] ...
+ [INFO]  Sun Nov  7 18:28:16 CET 2021 ->>> [sys_reqs] terraform is already installed
+ [INFO]  Sun Nov  7 18:28:16 CET 2021 ->>> [sys_reqs] ...done.
+ [INFO]  Sun Nov  7 18:28:16 CET 2021 ->>> ...[ ./helper.sh sys reqs ] done.
 ```
+
+### 3. install platform requirements
+
+#### 3.1 azure
+
+
+#### 3.2 aws
+
+
 
 
 ### system

@@ -72,6 +72,29 @@ sys_reqs(){
   info "[sys_reqs] ...done."
 }
 
+az_reqs(){
+  info "[az_reqs] ..."
+
+  which az 1>/dev/null
+  if [ ! "$?" -eq "0" ] ; then
+    info "[sys_reqs] installing azure-cli"
+    apt-get update
+    apt-get install ca-certificates curl apt-transport-https lsb-release gnupg
+    curl -sL https://packages.microsoft.com/keys/microsoft.asc |
+      gpg --dearmor |
+      tee /etc/apt/trusted.gpg.d/microsoft.gpg > /dev/null
+    AZ_REPO=$(lsb_release -cs)
+    echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" |
+      tee /etc/apt/sources.list.d/azure-cli.list
+    apt-get update
+    apt-get install azure-cli
+  else
+    info "[sys_reqs] azure-cli is already installed"
+  fi
+
+  info "[az_reqs] ...done."
+}
+
 check_env_vars(){
   info "[check_env_vars] ..."
   for arg in "$@"
@@ -106,12 +129,17 @@ usage()
   cat <<EOM
   usages:
   $(basename $0) sys {reqs}
+                system features:
                           reqs   install required packages
 
-  $(basename $0) az {login|check}
+  $(basename $0) az {login|check|reqs}
+                azure platform features:
+                          reqs    installs azure related dependencies
                           login   logs in using the service principal credentials defined in environment
                                     (check '.variables' and '.secrets' files)
                           check   checks if logged in correctly listing VM's sizes
+                aws platform features:
+                          reqs    installs aws related dependencies
 EOM
   exit 1
 }
@@ -123,6 +151,9 @@ _pwd=$(pwd)
 case "$1" in
       az)
         case "$2" in
+              reqs)
+                az_reqs
+                ;;
               login)
                 az_login
                 ;;
