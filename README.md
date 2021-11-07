@@ -19,17 +19,29 @@ wget -O helper.sh --no-check-certificate https://raw.githubusercontent.com/jtvie
 ...if you run the script with no options, you'll get the available features: `./helper.sh`
 ```
 root@842b3e423955:~# ./helper.sh
- [DEBUG] Sun Nov  7 18:25:42 CET 2021 ... we have a '.variables' file
- [DEBUG] Sun Nov  7 18:25:42 CET 2021 ... we have a '.secrets' file
- [INFO]  Sun Nov  7 18:25:42 CET 2021 ->>> starting [ ./helper.sh   ] ...
+ [DEBUG] Sun Nov  7 21:15:27 CET 2021 ... we have a '.variables' file
+ [DEBUG] Sun Nov  7 21:15:27 CET 2021 ... we have a '.secrets' file
+ [INFO]  Sun Nov  7 21:15:27 CET 2021 ->>> starting [ ./helper.sh   ] ...
   usages:
-  helper.sh sys {reqs}
-                          reqs   install required packages
+    system features:
+    helper.sh sys {reqs}
+                          reqs        install required packages
 
-  helper.sh az {login|check}
-                          login   logs in using the service principal credentials defined in environment
-                                    (check '.variables' and '.secrets' files)
-                          check   checks if logged in correctly listing VM's sizes
+    azure platform features:
+    helper.sh az {login|check|reqs|create_sp}
+                          reqs        installs azure related dependencies
+                          login       logs in using the service principal credentials defined in environment
+                                        (check '.variables' and '.secrets' files)
+                          check       checks if logged in correctly listing VM's sizes
+                          create_sp   create a service principal with contributor role
+    aws platform features:
+    helper.sh aws {login|check|reqs}
+                          reqs        installs aws related dependencies
+    modules features:
+    helper.sh mod {fetch|deploy|undeploy}
+                          fetch       fetch terraform modules latest version
+                          deploy      deploy the infrastructure
+                          undeploy    undeploy the infrastructure
 ```
 
 #### 1.2. install system requirements
