@@ -186,7 +186,8 @@ TODO
 
 ### 2. use the modules
 - have a look into `test` folder, it contains examples on how to use modules
-#### 2.1. azure example - create the base resources on which we can build after, a storage account to save remote terraform state 
+#### 2.1. azure example - create a storage account to save [remote terraform state](https://www.terraform.io/docs/language/state/remote.html), on which we can build upon after 
+
 - create a terraform spec file to use the base module:
 ```
 root@842b3e423955:~# vi main.tf
