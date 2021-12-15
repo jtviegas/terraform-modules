@@ -25,33 +25,101 @@ if [ -f "${parent_folder}/.secrets" ]; then
     . "${parent_folder}/.secrets"
 fi
 
-usage()
+add_entry_to_secrets()
 {
-  cat <<EOM
-  usages:
-  $(basename $0) {az_sp} [on|off|login|check]
-                          on      creates azure service principal with the current account subscription
-                          off     deletes the one with id defined in ARM_CLIENT_ID
-                          login   logs in using the service principal credentials defined in environment
-                          check   checks if logged in correctly listing VM's sizes
+  info "[add_entry_to_secrets|in] ($1, $2)"
+  [ -z "$1" ] && err "no parameters provided" && return 1
+
+  if [ -f "${parent_folder}/.secrets" ]; then
+    sed -i '' "/export $1/d" "${parent_folder}/.secrets"
+
+    if [ ! -z "$2" ]; then
+      echo "export $1=$2" | tee -a "${parent_folder}/.secrets" > /dev/null
+    fi
+  fi
+  info "[add_entry_to_secrets|out]"
+}
+
+add_entry_to_variables()
+{
+  info "[add_entry_to_variables|in] ($1, $2)"
+  [ -z "$1" ] && err "no parameters provided" && return 1
+
+  if [ -f "${parent_folder}/.secrets" ]; then
+    sed -i '' "/export $1/d" "${parent_folder}/.variables"
+
+    if [ ! -z "$2" ]; then
+      echo "export $1=$2" | tee -a "${parent_folder}/.variables" > /dev/null
+    fi
+  fi
+  info "[add_entry_to_variables|out]"
+}
+
+
+az_sp_commands()
+{
+cat <<EOM
+  azure handy commands:
+    list all sp's:        az ad sp list --all --query "[].{displayName:displayName, objectId:objectId}" --output tsv
+    get details of sp:    az ad sp list --display-name "{displayName}"
+    list roles:           az role definition list --query "[].{name:name, roleType:roleType, roleName:roleName}" --output tsv
+    get details of role:  az role definition list --name "{roleName}"
+    get resource groups:  az group list --query "[].{name:name}" --output tsv
 EOM
-  exit 1
 }
 
-az_sp_on()
+az_create_sp()
 {
-  info "[az_sp_on|in]"
-  az ad sp create-for-rbac --role="Contributor" --scopes="/subscriptions/${ARM_SUBSCRIPTION_ID}" -o table
-  info "[az_sp_on] please add the following output to '.secrets' file:     password(ARM_CLIENT_SECRET) "
-  info "[az_sp_on] please add the following output to '.variables' file:   app_id(ARM_CLIENT_ID), tenant(ARM_TENANT_ID)"
-  info "[az_sp_on|out]"
+  info "[az_create_sp|in]"
+  out=$(az ad sp create-for-rbac --name="$AZURE_SP_NAME" --skip-assignment --scopes="/subscriptions/${ARM_SUBSCRIPTION_ID}" -o tsv)
+  if [ "$?" -eq "0" ] ; then
+    app_id=$(echo "$out" | awk '{print $1}')
+    secret=$(echo "$out" | awk '{print $4}')
+    add_entry_to_secrets "ARM_CLIENT_SECRET" "$secret"
+    add_entry_to_variables "ARM_CLIENT_ID" "$app_id"
+  fi
+  info "[az_create_sp|out]"
 }
 
-az_sp_off()
+az_delete_sp()
 {
-  info "[az_sp_off|in]"
+  info "[az_delete_sp|in]"
   az ad sp delete --id "${ARM_CLIENT_ID}"
-  info "[az_sp_off|out]"
+  if [ "$?" -eq "0" ] ; then
+    add_entry_to_secrets "ARM_CLIENT_SECRET"
+    add_entry_to_variables "ARM_CLIENT_ID"
+  fi
+  info "[az_delete_sp|out]"
+}
+
+az_set_sp_role()
+{
+  info "[az_set_sp_role|in] ($1, $2, $3)"
+
+  [ -z "$1" ] && err "no role provided" && return 1
+  [ -z "$2" ] && err "no sp app display name provided" && return 1
+  [ -z "$3" ] && err "no resource group provided" && return 1
+
+  role="$1"
+  sp_app_name="$2"
+  rg="$3"
+
+  objId=$(az ad sp list --display-name "$sp_app_name" -o tsv | awk '{print $18}')
+  if [ "$?" -eq "0" ] ; then
+    info "[az_set_sp_role] found objId: $objId"
+    roleId=$(az role definition list --name "$role" --query "[0].name" | tr -d '"')
+    info "[az_set_sp_role] found roleId: $roleId"
+    if [ "$?" -eq "0" ] ; then
+      az role assignment create --assignee-principal-type "ServicePrincipal" --assignee-object-id "${objId}" --role "${roleId}" # --resource-group "${rg}"
+    else
+      err "[az_set_sp_role] something wrong in finding the roleId for $role"
+    fi
+
+  else
+    err "[az_set_sp_role] something wrong in finding the objId for the sp app: $sp_app_name"
+  fi
+
+  info "[az_set_sp_role|out]"
 }
 
 az_sp_login()
@@ -61,30 +129,63 @@ az_sp_login()
   info "[az_sp_login|out]"
 }
 
-az_sp_check()
+az_login_check()
 {
-  info "[az_sp_check|in]"
+  info "[az_login_check|in]"
   az vm list-sizes --location westus
-  info "[az_sp_check|out]"
+  info "[az_login_check|out]"
+}
+
+az_logout()
+{
+  info "[az_logout|in]"
+  az logout
+  info "[az_logout|out]"
+}
+
+usage()
+{
+  cat <<EOM
+  usages:
+  $(basename $0) {az} [sp_create|sp_set_owner|sp_login|login_check|logout|sp_delete|commands]
+                          sp_create     creates azure service principal in an app named 'terraform' with no roles
+                          sp_set_owner  adds Owner role to the service principal defined in ARM_CLIENT_ID
+                          sp_login      logs in using the service principal defined in ARM_CLIENT_ID
+                          login_check   checks if logged in correctly listing VM's sizes
+                          logout        logs out from current azure cli session
+                          sp_delete     deletes the service principal defined in ARM_CLIENT_ID
+                          commands      lists handy azure cli commands
+EOM
+  exit 1
 }
 
 info "starting [ $0 $1 $2 ] ..."
 _pwd=$(pwd)
 
 case "$1" in
-      az_sp)
+      az)
         case "$2" in
-              on)
-                az_sp_on
+              sp_create)
+                az_create_sp
                 ;;
-              off)
-                az_sp_off
+              sp_set_owner)
+                az_set_sp_role "$AZURE_OWNER_ROLE" "$AZURE_SP_NAME" "$RESOURCE_GROUP"
+                az_set_sp_role "Application Administrator" "$AZURE_SP_NAME" "$RESOURCE_GROUP"
                 ;;
-              login)
+              sp_login)
                 az_sp_login
                 ;;
-              check)
-                az_sp_check
+              logout)
+                az_logout
+                ;;
+              sp_delete)
+                az_delete_sp
+                ;;
+              login_check)
+                az_login_check
+                ;;
+              commands)
+                az_sp_commands
                 ;;
               *)
                 usage
@@ -95,3 +196,9 @@ case "$1" in
         usage
 esac
 info "...[ $0 $1 $2 ] done."
+
+
+
+
+
+

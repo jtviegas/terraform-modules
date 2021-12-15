@@ -1,0 +1,6 @@
+businessunit = "eng"
+solution = "tfmod"
+client = "team"
+env = "dev"
+name = "base"
+instance = "001"

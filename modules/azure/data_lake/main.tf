@@ -39,3 +39,5 @@ resource "azurerm_storage_data_lake_gen2_path" "data_lake_paths" {
   storage_account_id = azurerm_storage_account.data_lake.id
   resource           = "directory"
 }
+
+
