@@ -45,7 +45,7 @@ add_entry_to_variables()
   info "[add_entry_to_variables|in] ($1, $2)"
   [ -z "$1" ] && err "no parameters provided" && return 1
 
-  if [ -f "${parent_folder}/.secrets" ]; then
+  if [ -f "${parent_folder}/.variables" ]; then
     sed -i '' "/export $1/d" "${parent_folder}/.variables"
 
     if [ ! -z "$2" ]; then
@@ -143,6 +143,17 @@ az_logout()
   info "[az_logout|out]"
 }
 
+az_list_sp_roles()
+{
+  info "[az_list_sp_roles|in] ($1)"
+
+  [ -z "$1" ] && err "no sp app display name provided" && return 1
+  sp_app_name="$1"
+  az role assignment list --all --assignee "${sp_app_name}" --output json --query '[].{principalName:principalName, roleDefinitionName:roleDefinitionName, scope:scope}'
+
+  info "[az_list_sp_roles|out]"
+}
+
 usage()
 {
   cat <<EOM
@@ -155,6 +166,7 @@ usage()
                           logout        logs out from current azure cli session
                           sp_delete     deletes the service principal defined in ARM_CLIENT_ID
                           commands      lists handy azure cli commands
+                          sp_roles      lists roles assigned to the service principal defined in ARM_CLIENT_ID
 EOM
   exit 1
 }
@@ -175,17 +187,20 @@ case "$1" in
               sp_login)
                 az_sp_login
                 ;;
+              login_check)
+                az_login_check
+                ;;
               logout)
                 az_logout
                 ;;
               sp_delete)
                 az_delete_sp
                 ;;
-              login_check)
-                az_login_check
-                ;;
               commands)
                 az_sp_commands
+                ;;
+              sp_roles)
+                az_list_sp_roles "$ARM_CLIENT_ID"
                 ;;
               *)
                 usage

@@ -15,3 +15,4 @@ terraform.tfstate
 secrets.inc
 helloworld.zip
 bashutils.inc
+.terraform.lock*

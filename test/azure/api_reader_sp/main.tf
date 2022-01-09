@@ -46,5 +46,6 @@ output "sp_object_id" {
 
 output "sp_pswd" {
   value = module.api_reader_sp.pswd
+  sensitive = true
 }
 

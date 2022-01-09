@@ -56,7 +56,7 @@ testOn()
   info "[testOn|in]"
   cd "$test_dir"
   fetchModules
-  terraform init
+  terraform init  -reconfigure
   terraform plan -var-file="main.tfvars"
   terraform apply -auto-approve -lock=true -lock-timeout=5m -var-file="main.tfvars"
   terraform output
@@ -70,7 +70,7 @@ testOff()
   info "[testOff|in]"
   cd "$test_dir"
   fetchModules
-  terraform init
+  terraform init  -reconfigure
   terraform destroy -lock=true -lock-timeout=5m -auto-approve -var-file="main.tfvars"
   rm -rf "modules"
   cd "$_pwd"
