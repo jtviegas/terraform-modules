@@ -1,16 +1,48 @@
+export ENV=${TFMOD_ENVIRONMENT:-"dev"}
+
+# variables
+export TF_VAR_businessunit=eng
+export TF_VAR_solution=modules
+export TF_VAR_solution_short=mod
+export TF_VAR_component=___TO_BE_DEFINED___
+export TF_VAR_client=no
+export TF_VAR_location="West Europe"
+export TF_VAR_location_2="West US 2"
+export TF_VAR_geo=weu
+export TF_VAR_geo_2=wus2
+export TF_VAR_env=$ENV
+# export TF_VAR_instance="001"
+
 # aws
 export AWS_MAIN_PROFILE=tgedr_main
 export AWS_USER_PROFILE=tgedr
-# azure
-export AZURE_SP_NAME=terraform
-export AZURE_OWNER_ROLE=Owner
-export AZURE_STORE_TABLE_CONTRIBUTOR_ROLE="Storage Table Data Contributor"
-export RESOURCE_GROUP=rg0eng0tfmod0team0dev
+
+# --- azure ---
+export ARM_USER=tmp.tgedr@gmail.com
 export ARM_SUBSCRIPTION_ID=6175f3e6-4d8c-4157-a15c-0a45e7e98580
 export ARM_TENANT_ID=d69819b1-740d-435a-8ff4-c41cdb1df926
-export ARM_USER=tmp.tgedr@gmail.com
-export AZURE_SP_OBJID="2b314f41-5d3a-4575-97d0-fb0921dc531e"
-export AZURE_ST_TABLE_CONTRIBUTOR_ROLE_ID="0a9a7e1f-b9d0-4cc4-a60d-0319b160aaa3"
 
+## --- base
+export TF_VAR_resource_group="rgp0${TF_VAR_businessunit}0${TF_VAR_solution_short}0${TF_VAR_client}0${TF_VAR_env}"
+export TF_VAR_configuration_store_account="sta0${TF_VAR_solution_short}0conf0${TF_VAR_env}0${TF_VAR_geo}"
+export TF_VAR_tfstate_storage_container="stc0tfstate"
+## --- iac_sp
+export TF_VAR_application_registration_iac="apr0${TF_VAR_businessunit}0${TF_VAR_solution_short}0iac0${TF_VAR_client}0${TF_VAR_env}"
+## --- solution_scaffolding
+export TF_VAR_log_analytics_ws="law0${TF_VAR_businessunit}0${TF_VAR_solution_short}0${TF_VAR_client}0${TF_VAR_env}"
+export TF_VAR_application_insights="ain0${TF_VAR_businessunit}0${TF_VAR_solution_short}0${TF_VAR_client}0${TF_VAR_env}"
+export TF_VAR_application_configuration="apc0${TF_VAR_businessunit}0${TF_VAR_solution_short}0${TF_VAR_client}0${TF_VAR_env}"
+export TF_VAR_key_vault="kva0${TF_VAR_businessunit}0${TF_VAR_solution_short}0${TF_VAR_client}0${TF_VAR_env}"
+## --- event hub
+export TF_VAR_eventhub="evh0${TF_VAR_businessunit}0${TF_VAR_solution_short}0events0${TF_VAR_client}0${TF_VAR_geo}0${TF_VAR_env}"
+export TF_VAR_eventhub_ns="ehn0${TF_VAR_businessunit}0${TF_VAR_solution_short}0events0${TF_VAR_client}0${TF_VAR_geo}0${TF_VAR_env}"
+export TF_VAR_eventhub_2="evh0${TF_VAR_businessunit}0${TF_VAR_solution_short}0events0${TF_VAR_client}0${TF_VAR_geo_2}0${TF_VAR_env}"
+export TF_VAR_eventhub_ns_2="ehn0${TF_VAR_businessunit}0${TF_VAR_solution_short}0events0${TF_VAR_client}0${TF_VAR_geo_2}0${TF_VAR_env}"
+export TF_VAR_eventhub_namespace_disaster_recovery_config="edr0${TF_VAR_businessunit}0${TF_VAR_solution_short}0events0${TF_VAR_client}0${TF_VAR_env}"
 
-export ARM_CLIENT_ID=88def23d-5546-4943-916e-9df961a4110d
+export TF_VAR_eventhub_data_capture_storage_account="dls0${TF_VAR_solution_short}0evhdc0${TF_VAR_env}0${TF_VAR_geo}"
+export TF_VAR_eventhub_data_capture_storage_container="dlf0evhdc"
+
+# ---dynamic section ---
+
+export IAC_SP_ID="f2b59c78-b5f7-40b8-8b03-27bdd485d1b1"
