@@ -168,7 +168,6 @@ resource "aws_iam_policy" "admin_group_main" {
                 "cloudformation:DescribeStackResources",
                 "acm:ListTagsForCertificate",
                 "cloudformation:DescribeStacks",
-                "iam:*",
                 "cloudfront:ListTagsForResource",
                 "cloudformation:GetTemplate",
                 "lambda:ListEventSourceMappings",
