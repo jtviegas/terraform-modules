@@ -28,3 +28,7 @@ output "access_key" {
   value = module.ops_user.access_key
   sensitive = true
 }
+
+output "access_key_id" {
+  value = module.ops_user.access_key_id
+}

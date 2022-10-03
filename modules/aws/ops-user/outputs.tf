@@ -7,3 +7,8 @@ output "access_key" {
   description = "user access key"
   sensitive = true
 }
+
+output "access_key_id" {
+  value       = aws_iam_access_key.user_access_key.id
+  description = "user access key id"
+}
