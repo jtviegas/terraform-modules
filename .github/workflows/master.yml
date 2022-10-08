@@ -17,5 +17,5 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         REPO_OWNER: jtviegas
         WITH_V: false
-        DEFAULT_BUMP: major
+        DEFAULT_BUMP: patch
 
