@@ -1,6 +1,7 @@
 # aws
-export AWS_MAIN_PROFILE=tgedr
-export AWS_ACCESS_KEY_ID=AKIAQTMU5GI3TTES34NG
+export AWS_USER_PROFILE=tgedr
+export AWS_MAIN_PROFILE=tgedr_main
+
 # azure
 export AZURE_SP_NAME=terraform
 export AZURE_OWNER_ROLE=Owner
@@ -13,4 +14,3 @@ export AZURE_SP_OBJID="2b314f41-5d3a-4575-97d0-fb0921dc531e"
 export AZURE_ST_TABLE_CONTRIBUTOR_ROLE_ID="0a9a7e1f-b9d0-4cc4-a60d-0319b160aaa3"
 
 
-export ARM_CLIENT_ID=88def23d-5546-4943-916e-9df961a4110d

@@ -34,6 +34,7 @@ module "domain_certificate" {
   source = "./modules/aws/domain-certificate"
   domain = var.domain
   sub_domains = var.sub_domains
+  depends_on = [module.subdomains]
 }
 
 variable "buckets" {
@@ -61,4 +62,5 @@ module "web_distribution" {
   bucket_name = each.value
   domain_name = var.buckets_domain[each.value]
   certificate_domain_name = var.domain
+  depends_on = [module.s3_websites, module.domain_certificate]
 }
