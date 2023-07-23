@@ -16,3 +16,4 @@ secrets.inc
 helloworld.zip
 bashutils.inc
 .terraform.lock*
+.local_variables
