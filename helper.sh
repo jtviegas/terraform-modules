@@ -83,9 +83,9 @@ update_bashutils(){
 # ===> MAIN SECTION ===>
 
 # ---------- LOCAL CONSTANTS ----------
-MODULES_URL=https://github.com/jtviegas/terraform-modules/branches/zero_thirteen/modules
+# MODULES_URL=https://github.com/jtviegas/terraform-modules/branches/zero_thirteen/modules
 MODULES_DIR="${this_folder}/modules"
-MODE=LOCAL # LOCAL or REMOTE
+# MODE=LOCAL # LOCAL or REMOTE
 TEST_DIR="$this_folder/test"
 # ---------- FUNCTIONS ----------
 
@@ -96,6 +96,9 @@ commands()
   aws configure list    : list current AWS configuration
 EOM
 }
+
+
+
 
 postprocess()
 {
@@ -122,30 +125,27 @@ postprocess()
 
 test()
 {
-  info "[test|in]"
+  info "[test|in] (provider=$1, module=$2, operation=$3)"
 
   local result=0
   local provider="$1"
-  local module_and_element="$2"
+  local module="$2"
   local operation="$3"
-  local postprocessing="$4"
 
-  local iac_dir="${MODULES_DIR}"
-  local test_dir="${TEST_DIR}/${provider}/${module_and_element}"
+  [ "$operation" != "on" ] && [ "$operation" != "off" ] && usage
 
-  [ "$operation" != "on" ] && [ "$operation" != "off" ] && usage 
+  local test_dir="${TEST_DIR}/${provider}/${module}"
 
+  _pwd=`pwd`
   cd "$test_dir" && cp -R "$MODULES_DIR" "modules"
 
   if [ "$operation" == "on" ]; then
     terraform init
     terraform plan -var-file="main.tfvars"
     terraform apply -auto-approve -lock=true -lock-timeout=5m -var-file="main.tfvars"
-    [ "$?" -eq "0" ] && [ ! -z $postprocessing ] && postprocess "$postprocessing" "$operation"
   elif [ "$operation" == "off" ]; then
     terraform init
     terraform destroy -lock=true -lock-timeout=5m -auto-approve -var-file="main.tfvars"
-    [ "$?" -eq "0" ] && [ ! -z $postprocessing ] && postprocess "$postprocessing" "$operation"
   fi
 
   rm -rf "modules"
@@ -154,15 +154,17 @@ test()
   info "[test|out]"
 }
 
+
+
 # -------------------------------
 
 usage() {
   cat <<EOM
   usage:
   $(basename $0)
-      commands    : list handy commands
-      test { provider } { module[/{element}] } { on|off } [id]  : test module
-      update      : updates the include '.bashutils' file
+      commands                                  : list handy commands
+      test { provider } { module } { on|off }   : test module
+      update                                    : updates the include '.bashutils' file
 EOM
   exit 1
 }
@@ -172,8 +174,8 @@ debug "1: $1 2: $2 3: $3 4: $4 5: $5 6: $6 7: $7 8: $8 9: $9"
 
 case "$1" in
   test)
-    [ -z "$4" ] && { usage; }
-    test "$2" "$3" "$4" "$5"
+    ([ -z $2 ] || [ -z $3 ] || [ -z $4 ]) && usage
+    test "$2" "$3" "$4"
     ;;
   update)
     update_bashutils

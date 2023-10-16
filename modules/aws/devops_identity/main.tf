@@ -7,16 +7,23 @@ terraform {
   }
 }
 
+# ------------------------------
 # -------    variables   -------
 
 variable "devops_identity_group" {type = string}
 variable "devops_identity_user" {type = string}
+variable "custom_policy" {
+  type = string
+  description = "custom policy to add: should be provided as json as jsonencode({...})"
+  default = null
+}
 
-# --- queries ---
+# ------------------------------
+# -------    queries   -------
+
 data "aws_iam_policy_document" "assume_role_policy" {
   statement {
     actions = ["sts:AssumeRole"]
-
     principals {
       type        = "Service"
       identifiers = ["ec2.amazonaws.com"]
@@ -24,6 +31,7 @@ data "aws_iam_policy_document" "assume_role_policy" {
   }
 }
 
+# ------------------------------
 # -------    resources   -------
 
 # --- group ---
@@ -33,12 +41,19 @@ resource "aws_iam_group" "devops_identity" {
 
 # --- role ---
 
-resource "aws_iam_role" "devops_identity" {
-  name                = "aws_iam_role_${var.devops_identity_group}"
-  assume_role_policy = data.aws_iam_policy_document.assume_role_policy.json
-}
+#resource "aws_iam_role" "devops_identity" {
+#  name                = "aws_iam_role_${var.devops_identity_group}"
+#  assume_role_policy = data.aws_iam_policy_document.assume_role_policy.json
+#}
 
 # --- policies ---
+
+resource "aws_iam_policy" "devops_identity_custom" {
+  count = var.custom_policy == null ? 0 : 1
+  name        = "aws_iam_policy_custom"
+  description = "custom policy"
+  policy = var.custom_policy
+}
 
 resource "aws_iam_policy" "devops_identity_main" {
   name        = "aws_iam_policy_main_${var.devops_identity_group}"
@@ -297,6 +312,7 @@ resource "aws_iam_policy" "devops_identity_route53" {
 EOF
 }
 
+
 # --- policies <-> groups ---
 resource "aws_iam_group_policy_attachment" "devops_identity_main" {
   group      = aws_iam_group.devops_identity.name
@@ -307,15 +323,26 @@ resource "aws_iam_group_policy_attachment" "devops_identity_route53" {
   policy_arn = aws_iam_policy.devops_identity_route53.arn
 }
 
+resource "aws_iam_group_policy_attachment" "devops_identity_custom" {
+  count = var.custom_policy == null ? 0 : 1
+  group      = aws_iam_group.devops_identity.name
+  policy_arn = aws_iam_policy.devops_identity_custom[0].arn
+}
+
 # --- policies <-> roles ---
-resource "aws_iam_role_policy_attachment" "devops_identity_main" {
-  role       = aws_iam_role.devops_identity.name
-  policy_arn = aws_iam_policy.devops_identity_main.arn
-}
-resource "aws_iam_role_policy_attachment" "devops_identity_route53" {
-  role       = aws_iam_role.devops_identity.name
-  policy_arn = aws_iam_policy.devops_identity_route53.arn
-}
+#resource "aws_iam_role_policy_attachment" "devops_identity_main" {
+#  role       = aws_iam_role.devops_identity.name
+#  policy_arn = aws_iam_policy.devops_identity_main.arn
+#}
+#resource "aws_iam_role_policy_attachment" "devops_identity_route53" {
+#  role       = aws_iam_role.devops_identity.name
+#  policy_arn = aws_iam_policy.devops_identity_route53.arn
+#}
+#resource "aws_iam_role_policy_attachment" "devops_identity_custom" {
+#  count = var.custom_policy == null ? 0 : 1
+#  role       = aws_iam_role.devops_identity.name
+#  policy_arn = aws_iam_policy.devops_identity_custom[0].arn
+#}
 
 # --- user ---
 resource "aws_iam_user" "devops_identity" {
@@ -335,6 +362,7 @@ resource "aws_iam_access_key" "devops_identity" {
   user    = aws_iam_user.devops_identity.name
 }
 
+# ------------------------------
 # -------    outputs   -------
 
 output "group_devops_identity_id" {
@@ -352,15 +380,15 @@ output "group_devops_identity_unique_id" {
   description = "The unique ID assigned by AWS"
 }
 
-output "role_devops_identity_id" {
-  value       = aws_iam_role.devops_identity.id
-  description = "The role ID"
-}
+#output "role_devops_identity_id" {
+#  value       = aws_iam_role.devops_identity.id
+#  description = "The role ID"
+#}
 
-output "role_devops_identity_arn" {
-  value       = aws_iam_role.devops_identity.arn
-  description = "The role arn"
-}
+#output "role_devops_identity_arn" {
+#  value       = aws_iam_role.devops_identity.arn
+#  description = "The role arn"
+#}
 
 output "user_devops_identity_password" {
   value       = aws_iam_user_login_profile.devops_identity.encrypted_password
@@ -371,7 +399,6 @@ output "user_devops_identity_access_key" {
   description = "user access key"
   sensitive = true
 }
-
 output "user_devops_identity_access_key_id" {
   value       = aws_iam_access_key.devops_identity.id
   description = "user access key id"

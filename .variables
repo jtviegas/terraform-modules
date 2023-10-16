@@ -1,6 +1,5 @@
 # aws
-export AWS_USER_PROFILE=tgedr
-export AWS_MAIN_PROFILE=tgedr_main
+export AWS_PROFILE=tgedr_iac
 
 # azure
 export AZURE_SP_NAME=terraform
